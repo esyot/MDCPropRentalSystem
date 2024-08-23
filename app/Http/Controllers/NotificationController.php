@@ -15,7 +15,7 @@ class NotificationController extends Controller
         // Optionally, you can check if the update was successful
         if ($update) {
             // Redirect to the provided link if the update was successful
-            return redirect()->to($redirect_link);
+            return redirect($redirect_link);
         } else {
             // Handle the case where the update failed
             return redirect()->back()->with('error', 'Failed to mark notification as read.');
@@ -36,5 +36,31 @@ class NotificationController extends Controller
     
         return view('pages.partials.notification-list', ['notifications' => collect()]);
     }
+
+    public function readAll(){
+
+        $notifications = Notification::where('isRead', false)->update(['isRead' => true]);
+
+        if($notifications){
+
+            return redirect()->back()->with('success', 'All notifications marked as read.');
+        }
+
+        return redirect()->back()->with('info', 'There were no unread notifications to be marked as read.');
+    }
+
+    public function deleteAll() {
+        // Delete all notifications where 'isRead' is false
+        $deletedCount = Notification::where('isRead', true)->delete();
+    
+        // Check if any records were deleted
+        if ($deletedCount > 0) {
+            return redirect()->back()->with('success', 'All unread notifications have been deleted.');
+        }
+    
+        // If no records were deleted, you might want to handle that case
+        return redirect()->back()->with('info', 'There were no unread notifications to delete.');
+    }
+    
     
 }

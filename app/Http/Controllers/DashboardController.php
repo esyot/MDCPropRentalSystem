@@ -14,6 +14,8 @@ class DashboardController extends Controller
     public function index(){
         $currentDate = now(); 
         $default = 1; 
+
+        $page_title = 'Dashboard';
         
         $currentCategory = Category::where('id', $default)->get();
         $transactions = Transaction::where('category_id', $default)->get();
@@ -29,7 +31,7 @@ class DashboardController extends Controller
             return \Carbon\Carbon::parse($transaction->rent_date)->format('Y-m-d'); 
         })->unique()->values()->toArray();
     
-        return view('pages.dashboard', compact('unreadNotifications', 'notifications', 'items', 'currentCategory', 'categories', 'currentDate', 'transactions', 'daysWithRecords'));
+        return view('pages.dashboard', compact('page_title', 'unreadNotifications', 'notifications', 'items', 'currentCategory', 'categories', 'currentDate', 'transactions', 'daysWithRecords'));
     }
 
     public function dateView($date){
@@ -42,6 +44,7 @@ class DashboardController extends Controller
 
     public function dateCustom(Request $request){
         
+        $page_title = "Dashboard";
         // Get year and month from request
         $year = $request->year;
         $month = $request->month;
@@ -65,7 +68,7 @@ class DashboardController extends Controller
 
         $items = Item::where('category_id', $category)->get();
     
-        return view('pages.dashboard', compact('notifications', 'unreadNotifications', 'items','currentCategory', 'categories', 'currentDate', 'transactions', 'daysWithRecords'));
+        return view('pages.dashboard', compact('page_title', 'notifications', 'unreadNotifications', 'items','currentCategory', 'categories', 'currentDate', 'transactions', 'daysWithRecords'));
     }
 
     public function transactionAdd(Request $request)
@@ -102,7 +105,7 @@ class DashboardController extends Controller
             'icon' => "https://cdn-icons-png.flaticon.com/512/9187/9187604.png",
             'title' => "New Transaction",
             'description' => "Reinhard Esteban added a new transaction, check it now.",
-            'redirect_link' => "www.facebook.com"  
+            'redirect_link' => "transactions"  
         ]);
         
 
@@ -117,10 +120,13 @@ class DashboardController extends Controller
 
     public function calendarMove($action, $category, $year, $month){
          // Get year and month from request
+
+         $page_title = 'Dashboard';
         
      
          // Handle the action (e.g., next month, previous month)
          if ($action === 'left') {
+
 
             $category = $category;
 
@@ -140,7 +146,7 @@ class DashboardController extends Controller
     
             $items = Item::where('category_id', $category)->get();
         
-            return view('pages.dashboard', compact('notifications', 'unreadNotifications', 'items','currentCategory', 'categories', 'currentDate', 'transactions', 'daysWithRecords'));
+            return view('pages.dashboard', compact('page_title', 'notifications', 'unreadNotifications', 'items','currentCategory', 'categories', 'currentDate', 'transactions', 'daysWithRecords'));
            
 
          } elseif ($action === 'right') {
@@ -162,13 +168,34 @@ class DashboardController extends Controller
     
             $items = Item::where('category_id', $category)->get();
         
-            return view('pages.dashboard', compact('notifications', 'unreadNotifications', 'items','currentCategory', 'categories', 'currentDate', 'transactions', 'daysWithRecords'));
+            return view('pages.dashboard', compact('page_title', 'notifications', 'unreadNotifications', 'items','currentCategory', 'categories', 'currentDate', 'transactions', 'daysWithRecords'));
+           
+         
+
+        } elseif ($action === 'today') {
+            $category = $category;
+
+            $currentDate = now();
+
+            $transactions = Transaction::where('category_id', $category)->get();
+ 
+            $categories = Category::orderBy('id')->get();
+            $currentCategory = Category::where('id', $category)->get();
+
+            $notifications = Notification::orderBy('created_at', 'DESC')->get();
+            $unreadNotifications = Notification::where('isRead', false)->get()->count();
+    
+            $daysWithRecords = $transactions->map(function ($transaction) {
+                return \Carbon\Carbon::parse($transaction->rent_date)->format('Y-m-d'); 
+            })->unique()->values()->toArray();
+    
+            $items = Item::where('category_id', $category)->get();
+        
+            return view('pages.dashboard', compact('page_title', 'notifications', 'unreadNotifications', 'items','currentCategory', 'categories', 'currentDate', 'transactions', 'daysWithRecords'));
            
          }
  
-         // Construct the date string and create a Carbon instance for the first day of the s            cified month and year
-        
- 
+      
            
     }
 

@@ -53,6 +53,21 @@ return new class extends Migration
             $table->boolean('isRead')->default(false);
             $table->timestamps(); 
          });
+
+         Schema::create('messages', function (Blueprint $table) {
+            $table->id();
+            $table->text('replied_message')->nullable(true);
+            $table->text('replied_message_name')->nullable(true);
+            $table->text('replied_message_type')->nullable(true);
+            $table->string('sender_name');
+            $table->string('receiver_name');
+            $table->text('content')->nullable(true)->default('like');
+            $table->text('img')->nullable(true);
+            $table->boolean('isReacted')->default(false);
+            $table->boolean('isRead')->default(false);
+            $table->string('type')->default('like');
+            $table->timestamps();
+         });
     }
 
     /**

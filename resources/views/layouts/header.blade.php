@@ -11,7 +11,7 @@
     <link rel="icon" href="{{asset('asset/photos/logo.png')}}" type="image/png">
     <style>
         .scrollbar-thin::-webkit-scrollbar {
-        width: 8px; 
+        width: 4px; 
         }
         .scrollbar-thin::-webkit-scrollbar-thumb {
             background-color: #4b5563;
@@ -20,7 +20,27 @@
         .scrollbar-thin::-webkit-scrollbar-track {
             background-color: #f3f4f6; 
         }
-    </style>
+        
+        
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px; 
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #888; 
+            border-radius: 10px; 
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #555; 
+        }
+
+</style>
+
 </head>
 <body class="flex h-screen overflow-hidden bg-gray-100 text-gray-800">
 
@@ -33,15 +53,15 @@
         </div>
 
         <div id="menu-items" class="mt-10 space-y-6">
-            <a href="#" class="w-full p-3 flex items-center justify-center text-white hover:text-blue-300 transition duration-200 rounded-lg" title="Dashboard">
+            <a href="{{ route('dashboard') }}" class="w-full p-3 flex items-center justify-center text-white hover:text-blue-300 transition duration-200 rounded-lg" title="Dashboard">
                 <i class="fa-solid fa-gauge fa-lg transition-transform duration-300 ease-in-out transform hover:scale-110"></i>
                 <span class="ml-4 text-sm hidden">Dashboard</span>
             </a>
-            <a href="#" class="w-full p-3 flex items-center justify-center text-white hover:text-blue-300 transition duration-200 rounded-lg" title="Pending requests">
+            <a href="{{ route('transactions')}}" class="w-full p-3 flex items-center justify-center text-white hover:text-blue-300 transition duration-200 rounded-lg" title="Pending requests">
                 <i class="fa-solid fa-list fa-lg transition-transform duration-300 ease-in-out transform hover:scale-110"></i>
                 <span class="ml-4 text-sm hidden">Pending Requests</span>
             </a>
-            <a href="#" class="w-full p-3 flex items-center justify-center text-white hover:text-blue-300 transition duration-200 rounded-lg" title="Messages">
+            <a href="{{ route('messages') }}" class="w-full p-3 flex items-center justify-center text-white hover:text-blue-300 transition duration-200 rounded-lg" title="Messages">
                 <i class="fa-solid fa-message fa-lg transition-transform duration-300 ease-in-out transform hover:scale-110"></i>
                 <span class="ml-4 text-sm hidden">Messages</span>
             </a>
@@ -68,7 +88,7 @@
         <div class="flex items-center justify-between bg-white p-4 shadow-md relative">
             <!-- App Naddme -->
             <div class="flex items-center space-x-2">
-                <span class="text-lg font-semibold">Dashboard</span>
+                <span class="text-lg font-semibold"> {{ $page_title }}</span>
             </div>
 
             <!-- Right-side icons -->
@@ -92,11 +112,13 @@
             <h1 class="text-2xl font-bold">Notifications</h1>
     </div> 
     
-    <div class="m-2 font-medium">
+    <div class="flex justify-between items-center">
+    <div class="font-medium p-2">
             <button id="all" onclick="document.getElementById('all').classList.add('bg-blue-300'); document.getElementById('unread').classList.remove('bg-blue-300')"
                 hx-get="{{ route('notificationList', ['filter'=>'all'])}}" 
                 hx-swap="innerHTML" 
                 hx-trigger="click" 
+                 hx-indicator="#loader"
                 hx-target="#notification-list"
                 class="px-2 rounded-full text-blue-500 bg-blue-300 hover:bg-blue-200">
                 All
@@ -107,14 +129,39 @@
                 hx-get="{{ route('notificationList', ['filter'=>'unread'])}}" 
                 hx-swap="innerHTML" 
                 hx-trigger="click" 
+                hx-indicator="#loader"
                 hx-target="#notification-list"
                 class="px-2 text-blue-500 rounded-full hover:bg-blue-200">
                 Unread
             </button>
-
         </div>
-        <div id="notification-list" class="flex flex-col max-h-64 overflow-y-auto scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-100">
-            @include('pages.partials.notification-list')
+
+        <div class="relative inline-block text-left">
+        <button id="dropdownButton" class="focus:outline-none">
+            <i class="text-blue-500 hover:bg-blue-200 p-2 fas fa-ellipsis rounded-full"></i>
+        </button>
+        <div id="dropdownMenu" class="dropdown-content absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded shadow-lg">
+            <a href="{{ route('readAll') }}" class="block px-4 py-2 text-gray-700 rounded hover:bg-gray-100">
+                <i class="fas fa-check-circle mr-2"></i> Mark as all read
+            </a>
+            <a href="{{ route('deleteAll') }}" class="block px-4 py-2 text-gray-700 rounded hover:bg-gray-100">
+                <i class="fas fa-trash mr-2"></i> Delete All
+            </a>
+        </div>
+
+    </div>
+        </div>
+       
+        <div id="loader" class="rounded  bg-gray-400 bg-opacity-50 absolute inset-0 flex items-center justify-center z-50 hidden">
+       
+            <img src="{{asset('asset/loader/loading.gif')}}" alt="Loading..." class="w-16 h-16">
+        </div>
+
+        <div id="notification-list" class="z-10 flex flex-col max-h-64 overflow-y-auto scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-100">
+        
+        @include('pages.partials.notification-list')
+
+       
             <!-- "See More" Button -->
             @if(count($notifications) > 5)
             <button id="see-more-btn" class="w-full p-2 text-blue-600 cursor-pointer hover:bg-blue-100 transition duration-150 ease-in-out">
@@ -137,7 +184,7 @@
                     
 
                     <!-- User Dropdown -->
-                    <div id="user-dropdown" class="absolute right-0 mt-2 hidden min-w-[12rem] p-2 bg-white rounded-lg shadow-lg">
+                    <div id="user-dropdown" class="absolute right-0 mt-2 hidden min-w-[12rem] p-2 bg-white rounded-lg shadow-lg z-50">
                         <div class="p-2 text-gray-800 cursor-pointer hover:bg-gray-200">
                             <i class="fas fa-user mr-2"></i> Profile
                         </div>
@@ -150,12 +197,70 @@
                     </div>
 
                 </div>
+                
             </div>
+            
         </div>
 
-       @yield('content')
+        @yield('content')
+       
+      
 
        <script>
+       
+        document.body.addEventListener('htmx:beforeRequest', function() {
+            document.getElementById('loader').classList.remove('hidden');
+        });
+
+        document.body.addEventListener('htmx:afterRequest', function() {
+            document.getElementById('loader').classList.add('hidden');
+        });
+
+        function showModal(modalId) {
+        if (modalId) {
+            document.getElementById(modalId).classList.remove('hidden');
+        }
+    }
+
+    function hideModal(modalId) {
+        if (modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+    }
+
+    const sidebar = document.getElementById('sidebar');
+    const menuItems = document.getElementById('menu-items');
+    const toggleButton = document.getElementById('toggle-button');
+    
+    const notificationIcon = document.getElementById('notification-icon');
+    const notificationDropdown = document.getElementById('notification-dropdown');
+    const userIcon = document.getElementById('user-icon');
+    const userDropdown = document.getElementById('user-dropdown');
+    const logoLabel = document.getElementById('logoLabel');
+
+    toggleButton.addEventListener('click', () => {
+        sidebar.classList.toggle('w-64');
+        sidebar.classList.toggle('w-20');
+        toggleButton.querySelector('i').classList.toggle('fa-arrow-left');
+        toggleButton.querySelector('i').classList.toggle('fa-arrow-right');
+        logoLabel.classList.toggle('hidden');
+
+        const isExpanded = sidebar.classList.contains('w-64');
+        [...menuItems.children].forEach(item => {
+            item.classList.toggle('justify-center', !isExpanded);
+            item.classList.toggle('pl-4', isExpanded);
+            item.querySelector('span').classList.toggle('hidden', !isExpanded);
+        });
+    });
+
+    notificationIcon.addEventListener('click', () => {
+        notificationDropdown.classList.toggle('hidden');
+    });
+
+    userIcon.addEventListener('click', () => {
+        userDropdown.classList.toggle('hidden');
+    });
+
     document.addEventListener('DOMContentLoaded', function() {
         
         const seeMoreBtn = document.getElementById('see-more-btn');
@@ -169,10 +274,9 @@
             seeMoreBtn.addEventListener('click', function() {
                 if (notificationList.classList.contains('max-h-64')) {
                     notificationList.classList.remove('max-h-64');
-                    notificationList.classList.add('max-h-[calc(100vh-8rem)]'); // Adjusted max height to fit within viewport
+                    notificationList.classList.add('max-h-[calc(100vh-8rem)]'); 
                     seeMoreBtn.textContent = 'See Less';
 
-                    // Adjust dropdown position to fit within the viewport
                     const rect = dropdown.getBoundingClientRect();
                     const viewportHeight = window.innerHeight;
 
@@ -200,6 +304,20 @@
                 notificationDropdown.classList.add('hidden');
             }
         });
+
+            const button = document.getElementById('dropdownButton');
+            const menu = document.getElementById('dropdownMenu');
+
+            button.addEventListener('click', function () {
+                menu.classList.toggle('hidden');
+            });
+
+             
+            document.addEventListener('click', function (event) {
+                if (!button.contains(event.target) && !menu.contains(event.target)) {
+                    menu.classList.add('hidden');
+                }
+            });
 
     });
 </script>

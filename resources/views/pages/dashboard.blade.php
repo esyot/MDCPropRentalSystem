@@ -4,6 +4,13 @@
     <div class="flex items-center space-x-2">
         <form id="filter-form" class="flex justify-around space-x-4" action="{{ route('dateCustom')}}" method="GET">
             @csrf
+
+            @foreach($currentCategory as $category)
+            <a href="{{ route('calendarMove', ['action'=> 'today', 'category'=> $category->id, 'year'=> $currentDate->format('Y'), 'month'=>$currentDate->format('n')])}}" 
+            class="px-4 py-2 rounded-lg shadow-md text-teal-100 bg-teal-400 hover:bg-teal-600 transition-transform duration-300 ease-in-out transform hover:scale-110">
+                Today
+            </a>
+            @endforeach
             @foreach($currentCategory as $category)
                 <a href="{{ route('calendarMove', ['action'=> 'left', 'category'=> $category->id, 'year'=> $currentDate->format('Y'), 'month'=>$currentDate->format('n')])}}">
                     <i class="shadow-md text-white fa-solid fa-chevron-left hover:text-blue-300 cursor-pointer bg-blue-500 w-10 h-10 flex items-center justify-center rounded-full transition-transform duration-300 ease-in-out transform hover:scale-110"></i>
@@ -100,7 +107,7 @@
                 @endif
                 class="relative transition-transform duration-300 ease-in-out transform hover:scale-105 cursor-auto calendar-cell {{ $hasRecord ? 'bg-blue-500 text-white cursor-pointer shadow-md transition-transform duration-300 ease-in-out transform hover:scale-105' : 'bg-gray-300' }} p-4 flex flex-col items-center justify-center font-semibold overflow-hidden group">
                 <div class="flex justify-center items-center">
-                    <h1 class="font-bold text-6xl {{ $isSunday ? 'text-red-500' : '' }}">{{ $day }}</h1>
+                    <h1 class="drop-shadow font-bold text-6xl {{ $isSunday ? 'text-red-500' : '' }}">{{ $day }}</h1>
                 </div>
                 @if(!$hasRecord)
                     <div onclick="document.getElementById('transaction-add-{{$day}}').classList.remove('hidden')" title="Click to add a transaction manually" class="absolute inset-0 flex items-center justify-center text-2xl font-bold text-white opacity-0 group-hover:opacity-100 bg-gray-500 transition-opacity duration-300 ease-in-out">
@@ -114,52 +121,7 @@
 </div>
 
 <script>
-    function showModal(modalId) {
-        if (modalId) {
-            document.getElementById(modalId).classList.remove('hidden');
-        }
-    }
-
-    function hideModal(modalId) {
-        if (modalId) {
-            document.getElementById(modalId).classList.add('hidden');
-        }
-    }
-
-    const sidebar = document.getElementById('sidebar');
-    const menuItems = document.getElementById('menu-items');
-    const toggleButton = document.getElementById('toggle-button');
-    const notificationIcon = document.getElementById('notification-icon');
-    const notificationDropdown = document.getElementById('notification-dropdown');
-    const userIcon = document.getElementById('user-icon');
-    const userDropdown = document.getElementById('user-dropdown');
-    const logoLabel = document.getElementById('logoLabel');
-
-    toggleButton.addEventListener('click', () => {
-        sidebar.classList.toggle('w-64');
-        sidebar.classList.toggle('w-20');
-        toggleButton.querySelector('i').classList.toggle('fa-arrow-left');
-        toggleButton.querySelector('i').classList.toggle('fa-arrow-right');
-        logoLabel.classList.toggle('hidden');
-
-        const isExpanded = sidebar.classList.contains('w-64');
-        [...menuItems.children].forEach(item => {
-            item.classList.toggle('justify-center', !isExpanded);
-            item.classList.toggle('pl-4', isExpanded);
-            item.querySelector('span').classList.toggle('hidden', !isExpanded);
-        });
-    });
-
-    notificationIcon.addEventListener('click', () => {
-        notificationDropdown.classList.toggle('hidden');
-    });
-
-    userIcon.addEventListener('click', () => {
-        userDropdown.classList.toggle('hidden');
-    });
-
-    // Auto-submit form on select change
-    document.querySelectorAll('#filter-form select').forEach(select => {
+     document.querySelectorAll('#filter-form select').forEach(select => {
         select.addEventListener('change', () => {
             document.getElementById('filter-form').submit();
         });
