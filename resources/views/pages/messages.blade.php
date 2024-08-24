@@ -423,7 +423,7 @@
                   
                 @if($message->sender_name != $current_user_name)
                         <div class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center overflow-hidden">
-                            <img src="https://via.placeholder.com/40" alt="Profile Icon" class="w-full h-full object-cover">
+                            <img src="{{ asset('asset/photos/user.png')}}" alt="Profile Icon" class="w-full h-full object-cover">
                         </div>
                     @endif
                     <div class="">
