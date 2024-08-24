@@ -332,91 +332,9 @@
     </div>
 </div>
 
-<script>
-     document.body.addEventListener('htmx:beforeRequest', function() {
-            document.getElementById('loader').classList.remove('hidden');
-        });
-
-        document.body.addEventListener('htmx:afterRequest', function() {
-            document.getElementById('loader').classList.add('hidden');
-        });
-
-    const notificationIcon = document.getElementById('notification-icon');
-    const notificationDropdown = document.getElementById('notification-dropdown');
-    const userIcon = document.getElementById('user-icon');
-    const userDropdown = document.getElementById('user-dropdown');
-
-    notificationIcon.addEventListener('click', () => {
-        notificationDropdown.classList.toggle('hidden');
-    });
-
-    userIcon.addEventListener('click', () => {
-        userDropdown.classList.toggle('hidden');
-    });
-    document.addEventListener('DOMContentLoaded', function() {
-        
-        const seeMoreBtn = document.getElementById('see-more-btn');
-        const notificationList = document.getElementById('notification-list');
-        const notificationDropdown = document.getElementById('notification-dropdown');
-        const userDropdown = document.getElementById('user-dropdown');
-        const insideUser = document.getElementById('inside-user');
-        const insideNotification = document.getElementById('inside-notification');
-
-        if (seeMoreBtn) {
-            seeMoreBtn.addEventListener('click', function() {
-                if (notificationList.classList.contains('max-h-64')) {
-                    notificationList.classList.remove('max-h-64');
-                    notificationList.classList.add('max-h-[calc(100vh-8rem)]'); 
-                    seeMoreBtn.textContent = 'See Less';
-
-                    const rect = dropdown.getBoundingClientRect();
-                    const viewportHeight = window.innerHeight;
-
-                    if (rect.bottom > viewportHeight) {
-                        dropdown.style.top = `-${rect.bottom - viewportHeight}px`;
-                    }
-                } else {
-                    notificationList.classList.remove('max-h-[calc(100vh-8rem)]');
-                    notificationList.classList.add('max-h-64');
-                    seeMoreBtn.textContent = 'See More';
-                }
-            });
-        }
-        
-        document.addEventListener('click', function(event) {
-            const clickedElement = event.target;
-            
-            // Hide user dropdown if click is outside of it
-            if (!userDropdown.contains(clickedElement) && !insideUser.contains(clickedElement)) {
-                userDropdown.classList.add('hidden');
-            }
-
-            // Hide notification dropdown if click is outside of it
-            if (!notificationDropdown.contains(clickedElement) && !insideNotification.contains(clickedElement)) {
-                notificationDropdown.classList.add('hidden');
-            }
-        });
-
-            const button = document.getElementById('dropdownButton');
-            const menu = document.getElementById('dropdownMenu');
-
-            button.addEventListener('click', function () {
-                menu.classList.toggle('hidden');
-            });
-
-             
-            document.addEventListener('click', function (event) {
-                if (!button.contains(event.target) && !menu.contains(event.target)) {
-                    menu.classList.add('hidden');
-                }
-            });
-
-    });
-
-</script>
 
     <!-- Main Content -->
-    <div id="main-content" class="main-content flex bg-gray-200">
+    <div id="main-content" class="main-content flex bg-gray-100">
         <!-- Box A -->
         <div class="w-80 m-2 flex items-center flex-col ">
 
@@ -424,7 +342,7 @@
             Chats
         </div>
         <div>
-            <div class="relative m-2">
+            <div class="relative my-2 mx-1 mb-4">
                 <form hx-get="{{ route('contacts') }}"
                 hx-trigger="input"
                 hx-swap="innerHTML"
@@ -451,17 +369,47 @@
         </div>
         <!-- Box C -->
         <div class="w-full flex flex-col">
+
+        <div class="bg-blue-500 shadow-md p-2">
+            <div class="items-center flex ">
+            <img class="w-12 h-12 p-2 drop-shadow-md" src="{{ asset('asset/photos/user.png') }}" alt="">
+            <div class="text-xl text-white font-semibold">
+                {{ $receiver_name }}
+            </div>
+
+            </div>
+
+            <div class="relative flex w-full h-full"> <!-- Adjust the parent container to have width and height -->
+            <div class="absolute inset-0 top-[17rem] flex items-center justify-center"> <!-- Center the child in the parent -->
+                 <img class="bg-blue-500 rounded-full p-2 flex w-[300px] opacity-10 drop-shadow-2xl" src="{{asset('asset/photos/logo.png')}}" alt="">
+            </div>
+            </div>
+
+        
+        </div>
+        
+       
+
         <div id="messages-container" class="box-c bg-blue-300 scrollbar-thin h-64">
     @if(count($allMessages) == 0)
         <div class="flex flex-wrap w-full h-full items-center justify-center">
+            
         <p class="p-4 text-center">No chat selected. Please choose a contact.</p>
 
         </div>
     @endif
-           
+
+    <style>
+        
+    </style>
+    
+
+
+   
         
             <!-- Messages Bubble Section -->
-            <div class="flex flex-col bg-blue-300">
+            <div class="flex flex-col bg-blue-200">
+            
                 @foreach($allMessages as $message)
                 @if(count($allMessages) < 0)
                     <div >
@@ -710,17 +658,15 @@
                 </div>
                 
             @endforeach
-            <div id="popup" class="mt-2 hidden bg-red-100 text-red-600 border border-red-300 px-4 py-2 rounded">
-                Please fill out this field.
-            </div>
+          
            
-            <div class="flex space-x-2 p-4">
+            <div class="flex space-x-2 p-4 bg-blue-400">
                  
-            <form id="myForm" action="{{ route('messageSend') }}" method="POST" class="flex items-end w-full space-x-4">
+            <form id="myForm" action="{{ route('messageSend') }}" method="POST" class=" flex items-end w-full space-x-4">
 
                     
                      <input type="file" id="fileInput" class="hidden" accept="image/*" onchange="previewImage(event)">
-                    <button type="button" class="text-xl px-2 py-2 hover:text-gray-300 text-white" onclick="document.getElementById('fileInput').click();">
+                    <button type="button" class="transition-transform duration-300 ease-in-out transform hover:scale-110 drop-shadow text-xl px-2 py-2 hover:text-white text-white" onclick="document.getElementById('fileInput').click();">
                         <i class="fa-solid fa-image"></i>
                     </button>
 
@@ -737,8 +683,8 @@
                 <div class="relative w-full">
             <div class="flex items-end space-x-2 rounded-lg">
             
-                <div class="flex flex-col flex-1 bg-gray-200 rounded-lg">
-                <div class="flex flex-wrap justify-between items-start">
+                <div class="flex flex-col flex-1 bg-white rounded-lg">
+                <div class="flex flex-wrap items-start">
                     <div  class="flex flex-wrap">
                    
                         <div id="image-container" class="flex justify-between">
@@ -746,23 +692,28 @@
                         
                         </div>
                     </div>
-                    <div id="img-preview-x" class="p-2 text-xl font-semibold hover:text-gray-300 hidden">
-                     <button onclick="imagePreviewClose()" 
-                        type="button">&times;</button>
+                    <div id="img-preview-x" class="absolute left-[9.5rem] top-1 text-black font-semibold hover:text-gray-300 hidden">
+                     <div class="flex items-center justify-center hover:bg-gray-500 drop-shadow w-6 bg-gray-400 rounded-full">
+                        <button onclick="imagePreviewClose()" title="Close"
+                            type="button" class="drop-shadow text-white">&times;
+                        </button>
 
                     </div>
+                     </div>
+                    
                     </div>
 
-                    <div class="flex flex-col p-2">
+                    <div class="flex flex-col p-2 bg-white rounded-lg">
+
                     <input autocomplete="off" type="text" id="content" name="content" 
-               class="bg-gray-200 w-full rounded-lg focus:outline-none" placeholder="Aa">
+                        class="w-full px-2 bg-white rounded-full focus:outline-none" placeholder="Aa">
    
                     </div>
                     
                 </div>
                 <div class="px-2">
 
-                <button type="submit" id="sendButton" class="flex items-center text-xl text-xl px-2 py-2 hover:bg-blue-400 bg-blue-600 text-blue-200 mb-0.5 rounded-full">
+                <button type="submit" id="sendButton" class="transition-transform duration-300 ease-in-out transform hover:scale-110 drop-shadow flex items-center text-xl text-2xl px-2 py-2 hover:text-white text-blue-100 mb-0.5">
                     <i id="sendIcon" class="fa-solid fa-thumbs-up"></i>
                 </button>
 
@@ -845,7 +796,10 @@
         if (imageContainer.innerHTML.trim() !== '') {
             imageContainer.classList.add('m-0'); 
             imageContainer.classList.remove('m-2'); 
-        } 
+        } else{
+        
+
+        }
     }
 
     updateImageContainerMargin();
@@ -1016,7 +970,88 @@ function handleButtonClick(currentMessageId, replied_message_name, replied_messa
             logoLabel.classList.toggle('hidden', isExpanded);
         }
     });
-    </script>
+   
+     document.body.addEventListener('htmx:beforeRequest', function() {
+            document.getElementById('loader').classList.remove('hidden');
+        });
+
+        document.body.addEventListener('htmx:afterRequest', function() {
+            document.getElementById('loader').classList.add('hidden');
+        });
+
+    const notificationIcon = document.getElementById('notification-icon');
+    const notificationDropdown = document.getElementById('notification-dropdown');
+    const userIcon = document.getElementById('user-icon');
+    const userDropdown = document.getElementById('user-dropdown');
+
+    notificationIcon.addEventListener('click', () => {
+        notificationDropdown.classList.toggle('hidden');
+    });
+
+    userIcon.addEventListener('click', () => {
+        userDropdown.classList.toggle('hidden');
+    });
+    document.addEventListener('DOMContentLoaded', function() {
+        
+        const seeMoreBtn = document.getElementById('see-more-btn');
+        const notificationList = document.getElementById('notification-list');
+        const notificationDropdown = document.getElementById('notification-dropdown');
+        const userDropdown = document.getElementById('user-dropdown');
+        const insideUser = document.getElementById('inside-user');
+        const insideNotification = document.getElementById('inside-notification');
+
+        if (seeMoreBtn) {
+            seeMoreBtn.addEventListener('click', function() {
+                if (notificationList.classList.contains('max-h-64')) {
+                    notificationList.classList.remove('max-h-64');
+                    notificationList.classList.add('max-h-[calc(100vh-8rem)]'); 
+                    seeMoreBtn.textContent = 'See Less';
+
+                    const rect = dropdown.getBoundingClientRect();
+                    const viewportHeight = window.innerHeight;
+
+                    if (rect.bottom > viewportHeight) {
+                        dropdown.style.top = `-${rect.bottom - viewportHeight}px`;
+                    }
+                } else {
+                    notificationList.classList.remove('max-h-[calc(100vh-8rem)]');
+                    notificationList.classList.add('max-h-64');
+                    seeMoreBtn.textContent = 'See More';
+                }
+            });
+        }
+        
+        document.addEventListener('click', function(event) {
+            const clickedElement = event.target;
+            
+            // Hide user dropdown if click is outside of it
+            if (!userDropdown.contains(clickedElement) && !insideUser.contains(clickedElement)) {
+                userDropdown.classList.add('hidden');
+            }
+
+            // Hide notification dropdown if click is outside of it
+            if (!notificationDropdown.contains(clickedElement) && !insideNotification.contains(clickedElement)) {
+                notificationDropdown.classList.add('hidden');
+            }
+        });
+
+            const button = document.getElementById('dropdownButton');
+            const menu = document.getElementById('dropdownMenu');
+
+            button.addEventListener('click', function () {
+                menu.classList.toggle('hidden');
+            });
+
+             
+            document.addEventListener('click', function (event) {
+                if (!button.contains(event.target) && !menu.contains(event.target)) {
+                    menu.classList.add('hidden');
+                }
+            });
+
+    });
+
+</script>
 
 </body>
 </html>

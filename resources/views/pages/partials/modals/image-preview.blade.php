@@ -1,10 +1,10 @@
 <div id="image-preview-{{$message->id}}" class="fixed inset-0 bg-gray-800 bg-opacity-50 hidden flex items-center justify-center z-50">
     <!-- Modal content -->
     <div class="bg-white p-2 rounded shadow-lg">
-       <div class="flex items-center justify-between m-1">
+       <div class="flex items- justify-between m-1">
 
             <div>
-                <h2 class="text-xl font-bold">Image Preview</h2>
+                <h2 class="py-4 text-xl font-bold">Image Preview</h2>
             </div>
             
             <div class="hover:text-gray-200 text-2xl font-bold">
