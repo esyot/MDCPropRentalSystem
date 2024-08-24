@@ -666,7 +666,7 @@
 
                     
                      <input type="file" id="fileInput" class="hidden" accept="image/*" onchange="previewImage(event)">
-                    <button type="button" class="transition-transform duration-300 ease-in-out transform hover:scale-110 drop-shadow text-xl px-2 py-2 hover:text-white text-white" onclick="document.getElementById('fileInput').click();">
+                    <button type="button" class="transition-transform duration-300 ease-in-out transform hover:scale-110 drop-shadow text-xl px-2 py-2 hover:text-white text-gray-100" onclick="document.getElementById('fileInput').click();">
                         <i class="fa-solid fa-image"></i>
                     </button>
 
