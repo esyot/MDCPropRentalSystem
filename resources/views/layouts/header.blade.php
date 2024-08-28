@@ -144,9 +144,9 @@
 </div>
                 
     <!-- Toggle Button -->
-    <div id="toggle-container" class="fixed right-1 bottom-[45%] z-50 transform transition-transform duration-900 ease-in-out">
+    <div id="toggle-container" class="fixed right-1 bottom-[45%] z-50">
         <button id="open-btn" title="Display Settings"
-        class="border border-gray-300 transition-transform duration-300 ease-in-out transform hover:scale-110 shadow-xl toggle-button px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-lg shadow-lg">
+        class="{{ $setting->transition == true ? 'transition-transform duration-300 ease-in-out transform hover:scale-110' : '' }} border border-gray-300 shadow-xl toggle-button px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-lg shadow-lg">
             <i class="fa-solid fa-bars"></i>
         </button>
     </div>
