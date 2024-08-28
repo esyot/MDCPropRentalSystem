@@ -79,8 +79,8 @@
 
 <div id="modal-item"></div>
 
-<div class="p-6 bg-gray-100 flex-1 overflow-auto bg-gray-800 bg-opacity-50 w-full h-screen">
-<div id="calendar-grid" class="grid grid-cols-7 gap-2 bg-white p-2 h-full">
+<div id="main-content" class="p-6 flex-1 overflow-auto w-full h-screen">
+<div id="calendar-grid" class="grid grid-cols-7 gap-2 bg-white p-2 h-full shadow-lg">
 
         <!-- Header with days of the week (static) -->
         <div class="rounded-t-lg calendar-cell bg-red-500 p-2 flex items-center justify-center font-semibold text-gray-100">Sun</div>
@@ -123,11 +123,12 @@
                 @endif
                 class="relative transition-transform duration-300 ease-in-out transform hover:scale-105 cursor-auto calendar-cell {{ $hasRecord ? 'bg-blue-500 text-white cursor-pointer shadow-md transition-transform duration-300 ease-in-out transform hover:scale-105' : 'bg-gray-300' }} p-4 flex flex-col items-center justify-center font-semibold overflow-hidden group">
                 <div class="flex justify-center items-center">
-                    <h1 class="drop-shadow font-bold text-6xl {{ $isSunday ? 'text-red-500' : '' }}">{{ $day }}</h1>
+                    <h1 class="drop-shadow font-bold text-4xl {{ $isSunday ? 'text-red-500' : '' }}">{{ $day }}</h1>
                 </div>
                 @if(!$hasRecord)
-                    <div onclick="document.getElementById('transaction-add-{{$day}}').classList.remove('hidden')" title="Click to add a transaction manually" class="absolute inset-0 flex items-center justify-center text-2xl font-bold text-white opacity-0 group-hover:opacity-100 bg-gray-500 transition-opacity duration-300 ease-in-out">
-                        <h1 class="flex justify-center items-center text-6xl">+</h1>
+                    <div onclick="document.getElementById('transaction-add-{{$day}}').classList.remove('hidden')" title="Add Transaction" 
+                    class="absolute inset-0 flex items-center justify-center text-2xl font-bold text-white opacity-0 group-hover:opacity-100 bg-gray-500 transition-opacity duration-300 ease-in-out">
+                        <h1 class="flex justify-center items-center text-4xl">+</h1>
                     </div>
                 @endif
             </button>

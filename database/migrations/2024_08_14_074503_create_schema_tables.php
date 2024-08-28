@@ -68,6 +68,14 @@ return new class extends Migration
             $table->string('type')->default('like');
             $table->timestamps();
          });
+
+         Schema::create('settings', function (Blueprint $table) {
+            $table->id();
+            $table->boolean('darkMode')->default(false);
+            $table->boolean('transition')->default(true);
+            $table->timestamps();
+            
+         });
     }
 
     /**

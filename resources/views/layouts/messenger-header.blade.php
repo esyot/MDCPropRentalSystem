@@ -137,7 +137,7 @@
                         <span>Notifications</span>
                         @if($unreadNotifications > 0)
                         <span id="notification-count"
-                            class="absolute bottom-1 left-4 flex items-center justify-center w-4 h-4 text-xs font-bold text-white bg-red-600 rounded-full -translate-x-1/2 -translate-y-1/2">
+                            class="absolute top-0 left-0 flex items-center justify-center w-4 h-4 text-xs font-bold text-white bg-red-600 rounded-full -translate-x-1/2 -translate-y-1/2">
                             {{ $unreadNotifications }}
                         </span>
                         @endif
@@ -217,13 +217,13 @@
                 <!-- Messages Icon -->
                 @if($page_title != 'Messages')
                 <div class="relative" id="inside-notification">
-                    <button id="message-button" class="flex items-center hover:text-gray-300 focus:outline-none">
+                    <button id="messages-icon" class="flex items-center hover:text-gray-300 focus:outline-none">
                         <i class="fa-solid fa-envelope fa-lg text-blue-600"></i>
                         <span class="ml-2">Messages</span>
 
                         @if($unreadMessages > 0)
                         <span id="notification-count"
-                            class="absolute top-0 right-0 flex items-center justify-center w-4 h-4 text-xs font-bold text-white bg-red-600 rounded-full transform -translate-x-1/2 -translate-y-1/2">
+                            class="absolute top-0 left-0 flex items-center justify-center w-4 h-4 text-xs font-bold text-white bg-red-600 rounded-full transform -translate-x-1/2 -translate-y-1/2">
                             {{ $unreadMessages }}
                         </span>
                         @endif
@@ -232,7 +232,7 @@
                     <!-- Messages Dropdown Menu -->
                     <div id="messages-dropdown"
                         class="absolute right-0 hidden mt-2 w-64 bg-white border border-gray-300 rounded-lg shadow-lg z-10">
-                        <div class="p-2 max-h-80 overflow-y-auto">
+                        <div class="p-2 max-h-80 overflow-y-auto custom-scrollbar">
                             <div class="relative m-2">
                                 <form hx-get="{{ route('contacts') }}"
                                     hx-trigger="input"
@@ -263,7 +263,7 @@
 
                     <!-- User Dropdown Menu -->
                     <div id="user-dropdown"
-                        class="absolute right-0 hidden mt-2 w-64 bg-white rounded shadow-lg z-10">
+                        class="absolute right-0 hidden mt-2 p-2 border border-gray-300 bg-white rounded shadow-lg z-10">
                         <div class="p-2 text-gray-800 cursor-pointer hover:bg-gray-200 rounded">
                             <i class="text-blue-500 fas fa-user mr-2"></i> Profile
                         </div>
@@ -299,7 +299,7 @@
             const isExpanded = sidebar.classList.contains('expanded');
 
             // Toggle sidebar and related elements
-            sidebar.classList.toggle('expanded', !isExpanded);
+            sidebar.classList.toggle('expanded', !isExpanded);  
             mainContent.classList.toggle('expanded', !isExpanded);
             navbar.classList.toggle('expanded', !isExpanded);
 
@@ -336,7 +336,7 @@
         const notificationDropdown = document.getElementById('notification-dropdown');
         const userIcon = document.getElementById('user-icon');
         const userDropdown = document.getElementById('user-dropdown');
-
+   
         notificationIcon.addEventListener('click', () => {
             notificationDropdown.classList.toggle('hidden');
         });
@@ -344,6 +344,8 @@
         userIcon.addEventListener('click', () => {
             userDropdown.classList.toggle('hidden');
         });
+
+   
 
         // Hide dropdowns when clicking outside
         document.addEventListener('click', function(event) {

@@ -9,45 +9,134 @@
     <script src="{{ asset('asset/js/tailwind.min.js') }}"></script>
     <script src="{{ asset('asset/js/htmx.min.js') }}"></script>
     <link rel="icon" href="{{asset('asset/photos/logo.png')}}" type="image/png">
+    
     <style>
-        .scrollbar-thin::-webkit-scrollbar {
-        width: 4px; 
-        }
-        .scrollbar-thin::-webkit-scrollbar-thumb {
-            background-color: #4b5563;
-            border-radius: 9999px; 
-        }
-        .scrollbar-thin::-webkit-scrollbar-track {
-            background-color: #f3f4f6; 
-        }
-        
-        
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 4px; 
+       /* Custom scrollbar styles */
+       .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
         }
 
         .custom-scrollbar::-webkit-scrollbar-track {
-            background: #f1f1f1; 
+            background: #f1f1f1;
         }
 
         .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #888; 
-            border-radius: 10px; 
+            background: #888;
+            border-radius: 10px;
         }
 
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #555; 
+            background: #555;
+        }
+        .placeholder-center::placeholder{
+
+            text-align: center;
         }
 
+        /* slider */
+        .slider {
+            position: relative;
+            width: 60px;
+            height: 32px;
+        }
+        .slider-track {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: background-color 0.3s;
+            border-radius: 9999px;
+        }
+        .slider-thumb {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 28px;
+            height: 28px;
+            background-color: white;
+            border-radius: 9999px;
+            transition: transform 0.3s;
+        }
+        .slider input:checked + .slider-track {
+            background-color: #2196F3;
+        }
+        .slider input:checked + .slider-track .slider-thumb {
+            transform: translateX(26px);
+        }
+
+        
+    
+
 </style>
+
+
+
+
 
 </head>
 <body class="flex h-screen overflow-hidden bg-gray-100 text-gray-800">
 
+ <!-- Sidebar -->
+ <div id="sidebar-right" class="shadow-md fixed top-0 right-0 h-full w-64 bg-white transform translate-x-full transition-transform duration-300 ease-in-out z-50">
+        <div class="p-4">
+            <h2 class="text-lg font-bold">Display Settings</h2>
+            
+            
+            <form action="{{ route('darkMode') }}" method="POST">
+                @csrf
+                <div class="flex items-center justify-between mt-2">
+                    <p>Dark mode.</p>
+                    <label class="slider">
+                        <input 
+                            id="slider" 
+                            type="checkbox" 
+                            name="action" 
+                            class="sr-only"
+                            {{ $setting->darkMode ? 'checked' : '' }}
+                            onchange="this.form.submit()"
+                        >
+                        <div class="slider-track">
+                            <div class="slider-thumb"></div>
+                        </div>
+                    </label>
+                </div>
+            </form>
+
+        </div>
+    </div>
+                
+    <!-- Toggle Button -->
+    <div id="toggle-container" class="fixed right-1 bottom-[45%] z-50 transform transition-transform duration-900 ease-in-out">
+        <button id="open-btn" title="Display Settings"
+        class="border border-gray-300 transition-transform duration-300 ease-in-out transform hover:scale-110 shadow-xl toggle-button px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-lg shadow-lg">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+    </div>
+
+
+
+    <script>
+        // JavaScript to handle sidebar toggle
+        document.getElementById('open-btn').addEventListener('click', function() {
+            document.getElementById('sidebar-right').classList.toggle('translate-x-full');
+            document.getElementById('open-btn').classList.toggle('mr-[260px]');
+            
+        });
+
+       
+    </script>
+
     <!-- Sidebar -->
-    <div id="sidebar" class="h-full flex flex-col bg-gradient-to-b from-blue-500 to-blue-800 to- text-white shadow-lg transition-all duration-300 ease-in-out w-20">
-        <!-- Logo and Label -->
-        <div class="flex flex-col items-center mt-6">
+    <div id="sidebar" class="bg-gradient-to-b from-blue-500 to-blue-800 h-full flex flex-col text-white shadow-lg transition-all duration-300 ease-in-out w-20">
+        <!--  -->
+    <div class="space-y-16">
+    <!-- center contents of the sidebar -->
+     <div class="flex justify-center items-center flex-col">
+    <!-- Logo and Label -->
+        <div class="flex flex-col items-center  mt-4">
             <img class="w-12 h-12" src="{{asset('asset/photos/logo.png')}}" alt="Logo">
             <span id="logoLabel" class="ml-4 text-sm text-center hidden">MDC - Property Rental & <br>Reservation System</span>
         </div>
@@ -61,10 +150,6 @@
                 <i class="fa-solid fa-list fa-lg transition-transform duration-300 ease-in-out transform hover:scale-110"></i>
                 <span class="ml-4 text-sm hidden">Pending Requests</span>
             </a>
-            <a href="{{ route('messages') }}" class="w-full p-3 flex items-center justify-center text-white hover:text-blue-300 transition duration-200 rounded-lg" title="Messages">
-                <i class="fa-solid fa-message fa-lg transition-transform duration-300 ease-in-out transform hover:scale-110"></i>
-                <span class="ml-4 text-sm hidden">Messages</span>
-            </a>
             <a href="#" class="w-full p-3 flex items-center justify-center text-white hover:text-blue-300 transition duration-200 rounded-lg" title="Manage Roles">
                 <i class="fa-solid fa-users-gear fa-lg transition-transform duration-300 ease-in-out transform hover:scale-110"></i>
                 <span class="ml-4 text-sm hidden">Manage Roles</span>
@@ -75,17 +160,21 @@
             </a>
         </div>
 
-        <div class="mt-auto mb-6 flex justify-center">
-            <button id="toggle-button" onclick="toggleSidebar()" class="p-2 flex items-center justify-center bg-blue-500 hover:bg-blue-700 rounded-full transition duration-200 transition-transform duration-300 ease-in-out transform hover:scale-110">
-                <i class="fa-solid fa-arrow-right text-white "></i>
-            </button>
-        </div>
+       
+
     </div>
+    <div class="flex justify-center">
+            <button title="Expand | Shrink" id="toggle-button" onclick="toggleSidebar()" class="p-2 flex items-center justify-center bg-white hover:bg-gray-400 rounded-full transition duration-200 transition-transform duration-300 ease-in-out transform hover:scale-110">
+                <i class="fa-solid fa-arrow-right text-black"></i>
+            </button>
+    </div>
+    </div>
+</div>
 
     <!-- Main Content Area -->
     <div class="flex-1 flex flex-col overflow-hidden">
         <!-- Navbar -->
-        <div class="flex items-center justify-between bg-white p-4 shadow-md relative">
+        <div id="navbar" class="flex items-center justify-between bg-white p-4 shadow-md relative">
             <!-- App Naddme -->
             <div class="flex items-center space-x-2">
                 <span class="text-lg font-semibold"> {{ $page_title }}</span>
@@ -94,17 +183,17 @@
             <!-- Right-side icons -->
             <div class="flex items-center space-x-6 relative">
                 <!-- Notification Icon -->
-<div class="relative" id="inside-notification">
+            <div class="relative" id="inside-notification">
     <!-- Notification Button -->
-    <button id="notification-icon" class="hover:text-gray-300">
-        <i class="fa-solid fa-bell fa-lg text-blue-600"></i>
-        <span>Notifications</span>
-        @if($unreadNotifications > 0)
-        <span id="notification-count" class="absolute bottom-1 left-4 flex items-center justify-center w-4 h-4 text-xs font-bold text-white bg-red-600 rounded-full -translate-x-1/2 -translate-y-1/2">
-            {{ $unreadNotifications }}
-        </span>
-        @endif
-    </button>
+            <button id="notification-icon" class="hover:text-gray-300">
+                <i class="fa-solid fa-bell fa-lg text-blue-600"></i>
+                <span>Notifications</span>
+                @if($unreadNotifications > 0)
+                <span id="notification-count" class="absolute top-0 left-0 flex items-center justify-center w-4 h-4 text-xs font-bold text-white bg-red-600 rounded-full -translate-x-1/2 -translate-y-1/2">
+                    {{ $unreadNotifications }}
+                </span>
+                @endif
+            </button>
 
     <!-- Notification Dropdown -->
     <div id="notification-dropdown" class="rounded absolute right-0 mt-2 hidden w-[30rem] bg-white p-2 shadow-lg border border-gray-200 z-50">
@@ -114,38 +203,40 @@
     
     <div class="flex justify-between items-center">
     <div class="font-medium p-2">
-            <button id="all" onclick="document.getElementById('all').classList.add('bg-blue-300'); document.getElementById('unread').classList.remove('bg-blue-300')"
+            <button id="all" onclick="document.getElementById('all').classList.add('bg-gray-300'); document.getElementById('unread').classList.remove('bg-gray-300')"
                 hx-get="{{ route('notificationList', ['filter'=>'all'])}}" 
                 hx-swap="innerHTML" 
                 hx-trigger="click" 
                  hx-indicator="#loader"
                 hx-target="#notification-list"
-                class="px-2 rounded-full text-blue-500 bg-blue-300 hover:bg-blue-200">
+                class="px-2 rounded-full  bg-gray-300 hover:bg-gray-200">
                 All
             </button>
 
 
-            <button id="unread" onclick="document.getElementById('unread').classList.add('bg-blue-300'); document.getElementById('all').classList.remove('bg-blue-300');"
+            <button id="unread" onclick="document.getElementById('unread').classList.add('bg-gray-300'); document.getElementById('all').classList.remove('bg-gray-300');"
                 hx-get="{{ route('notificationList', ['filter'=>'unread'])}}" 
                 hx-swap="innerHTML" 
                 hx-trigger="click" 
                 hx-indicator="#loader"
                 hx-target="#notification-list"
-                class="px-2 text-blue-500 rounded-full hover:bg-blue-200">
+                class="px-2 rounded-full hover:bg-gray-200">
                 Unread
             </button>
         </div>
 
         <div class="relative inline-block text-left">
         <button id="dropdownButton" class="focus:outline-none">
-            <i class="text-blue-500 hover:bg-blue-200 p-2 fas fa-ellipsis rounded-full"></i>
+            <i class="text-gray-500 hover:bg-gray-200 p-2 fas fa-ellipsis rounded-full"></i>
         </button>
         <div id="dropdownMenu" class="dropdown-content absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded shadow-lg">
-            <a href="{{ route('readAll') }}" class="block px-4 py-2 text-gray-700 rounded hover:bg-gray-100">
-                <i class="fas fa-check-circle mr-2"></i> Mark as all read
+            <a href="{{ route('readAll') }}"
+                class="block px-4 py-2 rounded hover:bg-gray-100">
+                <i class="text-blue-500 fas fa-check-circle mr-2"></i> Mark as all read
             </a>
-            <a href="{{ route('deleteAll') }}" class="block px-4 py-2 text-gray-700 rounded hover:bg-gray-100">
-                <i class="fas fa-trash mr-2"></i> Delete All
+            <a href="{{ route('deleteAll') }}"
+                class="block px-4 py-2 rounded hover:bg-gray-100">
+                <i class="text-blue-500 fas fa-trash mr-2"></i> Delete All
             </a>
         </div>
 
@@ -171,67 +262,77 @@
     
     </div>
 </div>
- <!-- Messages Icon -->
- @if($page_title != 'Messages')
-                <div class="relative" id="inside-notification  items-center">
-                    <button id="message-button" class="flex items-center hover:text-gray-300 focus:outline-none">
-                        <i class="fa-solid fa-envelope fa-lg text-blue-600"></i>
-                        <span class="ml-2">Messages</span>
 
-                        @if($unreadMessages > 0)
-                        <span id="notification-count"
-                            class="absolute top-0 right-0 flex items-center justify-center w-4 h-4 text-xs font-bold text-white bg-red-600 rounded-full transform -translate-x-1/2 -translate-y-1/2">
-                            {{ $unreadMessages }}
-                        </span>
-                        @endif
-                    </button>
+        <!-- Messages Icon -->
+        @if($page_title != 'Messages')
+            <div class="relative" id="inside-messages">
+                <button id="messages-icon" class="flex items-center focus:outline-none">
+                    <i class="fa-solid fa-envelope fa-lg text-blue-600"></i>
+                    <span class="ml-2">Messages</span>
+
+                    @if($unreadMessages > 0)
+                    <span id="notification-count"
+                        class="absolute top-0 left-0 flex items-center justify-center w-4 h-4 text-xs font-bold text-white bg-red-600 rounded-full transform -translate-x-1/2 -translate-y-1/2">
+                        {{ $unreadMessages }}
+                    </span>
+                    @endif
+                </button>
 
                     <!-- Messages Dropdown Menu -->
-                    <div id="messages-dropdown"
-                        class="absolute right-0 hidden mt-2 w-64 bg-white border border-gray-300 rounded-lg shadow-lg z-10">
-                        <div class="p-2 max-h-80 overflow-y-auto">
-                            <div class="relative m-2">
+                    <div id="messages-dropdown" class="absolute right-0 hidden mt-2 w-64 bg-white border border-gray-300 rounded-lg shadow-lg z-10">
+                       <div class="p-2">
                                 <form hx-get="{{ route('contacts') }}"
                                     hx-trigger="input"
                                     hx-swap="innerHTML"
                                     hx-target="#contact-list"
-                                    class="flex justiify-around px-2 items-center bg-gray-100 rounded-full">
-                                    <div class="p-2">
-                                        <i class="fas fa-search text-gray-500"></i>
-                                    </div>
+                                    class="flex justiify-around px-2 items-center bg-gray-200 rounded-full">
+
+                                <div class="p-2">
+                                    <div class="fas fa-search text-black"></div>
+                                </div>
+
                                     <input type="text" name="searchValue" placeholder="Search contact"
                                         class="placeholder-center mr-8 focus:outline-none bg-transparent">
                                 </form>
-                            </div>
+                        </div>
+                    <div class="p-2 max-h-80 overflow-y-auto custom-scrollbar">
+                           
                             <ul id="contact-list" class="list-none">
                                 @include('pages.partials.contact-list')
                             </ul>
-                        </div>
-                    </div>
+
                 </div>
-                @endif
-
-
-
+            </div>
+        </div>
+    @endif
 
                 <!-- User Icon -->
                 <div id="inside-user" class="relative">
                     <button id="user-icon">
-                    <i  class="fa-solid fa-user fa-lg text-blue-600 cursor-pointer"></i>
-                    Juan Dela Cruz
+                        <div class="flex items-center space-x-2">
+                        <i  class="fa-solid fa-user fa-lg text-blue-600 cursor-pointer"></i>
+                        <h1 class="hover:text-gray-200">Juan Dela Cruz</h1>
+
+                        </div>
+                    
                     </button>
                     
 
-                    <!-- User Dropdown -->
-                    <div id="user-dropdown" class="absolute right-0 mt-2 hidden min-w-[12rem] p-2 bg-white rounded-lg shadow-lg z-50">
-                        <div class="p-2 text-gray-800 cursor-pointer hover:bg-gray-200">
-                            <i class="fas fa-user mr-2"></i> Profile
+                    <!-- User Dropdown Menu -->
+                    <div id="user-dropdown"
+                        class="absolute right-0 hidden mt-2 border p-2 border-gray-300 bg-white rounded-lg   shadow-xl z-10">
+                            <div class="flex flex-col space-y-2">
+
+                            
+                        <div class="p-2 cursor-pointer hover:bg-gray-200 rounded-lg">
+                            <i class="text-blue-500 fas fa-user mr-2"></i> Profile
                         </div>
-                        <div class="p-2 text-gray-800 cursor-pointer hover:bg-gray-200">
-                            <i class="fas fa-cog mr-2"></i> Settings
+                        <div class="p-2 cursor-pointer hover:bg-gray-200 rounded-lg">
+                            <i class="text-blue-500 fas fa-cog mr-2"></i> Settings
                         </div>
-                        <div class="p-2 text-gray-800 cursor-pointer hover:bg-gray-200">
-                            <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                        <div class="p-2 cursor-pointer hover:bg-gray-200 rounded-lg">
+                            <i class="text-blue-500 fas fa-sign-out-alt mr-2"></i> Logout
+                        </div>
                         </div>
                     </div>
 
@@ -243,7 +344,7 @@
 
         @yield('content')
        
-      
+
 
        <script>
        
@@ -273,8 +374,13 @@
     
     const notificationIcon = document.getElementById('notification-icon');
     const notificationDropdown = document.getElementById('notification-dropdown');
+
     const userIcon = document.getElementById('user-icon');
     const userDropdown = document.getElementById('user-dropdown');
+
+    const messageIcon = document.getElementById('messages-icon');
+    const messageDropdown = document.getElementById('messages-dropdown');
+
     const logoLabel = document.getElementById('logoLabel');
 
     toggleButton.addEventListener('click', () => {
@@ -300,14 +406,20 @@
         userDropdown.classList.toggle('hidden');
     });
 
+    messageIcon.addEventListener('click', () => {
+            messageDropdown.classList.toggle('hidden');
+        });
+
     document.addEventListener('DOMContentLoaded', function() {
         
         const seeMoreBtn = document.getElementById('see-more-btn');
         const notificationList = document.getElementById('notification-list');
         const notificationDropdown = document.getElementById('notification-dropdown');
+        const messagesDropdown = document.getElementById('messages-dropdown');
         const userDropdown = document.getElementById('user-dropdown');
         const insideUser = document.getElementById('inside-user');
         const insideNotification = document.getElementById('inside-notification');
+        const insideMessages = document.getElementById('inside-messages');
 
         if (seeMoreBtn) {
             seeMoreBtn.addEventListener('click', function() {
@@ -342,10 +454,16 @@
             if (!notificationDropdown.contains(clickedElement) && !insideNotification.contains(clickedElement)) {
                 notificationDropdown.classList.add('hidden');
             }
+
+            // Hide notification dropdown if click is outside of it
+            if (!messagesDropdown.contains(clickedElement) && !insideMessages.contains(clickedElement)) {
+                messagesDropdown.classList.add('hidden');
+            }
         });
 
             const button = document.getElementById('dropdownButton');
             const menu = document.getElementById('dropdownMenu');
+            const messagesButton = document.getElementById('dropdownMessages');
 
             button.addEventListener('click', function () {
                 menu.classList.toggle('hidden');
@@ -360,3 +478,46 @@
 
     });
 </script>
+
+
+@if($setting->darkMode == true)
+      <script>
+        document.getElementById('sidebar').classList.remove('bg-gradient-to-b');
+        document.getElementById('sidebar').classList.add('bg-gray-800');
+        
+        document.getElementById('navbar').classList.add('bg-gray-500', 'text-white');
+        document.getElementById('navbar').classList.remove('bg-white');
+
+        document.getElementById('content').classList.add('bg-gray-200');
+        document.getElementById('content').classList.remove('bg-gradient-to-r');
+
+        document.getElementById('sidebar-right').classList.remove('bg-white');
+        document.getElementById('sidebar-right').classList.add('bg-gray-800', 'text-white');
+
+        document.getElementById('dropdownMenu').classList.remove('bg-white');
+        document.getElementById('dropdownMenu').classList.add('bg-gray-500', 'text-white');
+
+        document.getElementById('notification-dropdown').classList.add('bg-gray-500', 'text-white');
+        document.getElementById('notification-dropdown').classList.remove('bg-white');
+
+        document.getElementById('messages-dropdown').classList.add('bg-gray-500', 'text-black');
+        document.getElementById('messages-dropdown').classList.remove('bg-white');
+
+
+        document.getElementById('contact-list').classList.add('text-white');
+        document.getElementById('contact-list').classList.remove('bg-white');
+
+        document.getElementById('user-dropdown').classList.add('bg-gray-500', 'text-white');
+        document.getElementById('user-dropdown').classList.remove('bg-white');
+
+        document.getElementById('main-content').classList.add('bg-gray-600');
+
+        const icons = navbar.querySelectorAll('i');
+    
+        icons.forEach(icon => {
+            icon.style.color = 'white'; 
+        });
+  
+</script>
+
+      @endif

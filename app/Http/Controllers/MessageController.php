@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Message;
 use App\Models\Notification;
+use App\Models\Setting;
 use Illuminate\Support\Facades\Storage;
 
 class MessageController extends Controller
@@ -56,9 +57,9 @@ class MessageController extends Controller
                         return $group->first(); 
                     })
                     ->values();
+       
         
-
-        return view('pages.messages', compact('unreadMessages', 'contacts', 'current_user_name', 'receiver_name', 'sender_name', 'notifications', 'unreadNotifications', 'page_title', 'allMessages'));
+        return view('pages.messages', compact('setting', 'unreadMessages', 'contacts', 'current_user_name', 'receiver_name', 'sender_name', 'notifications', 'unreadNotifications', 'page_title', 'allMessages'));
     }
     public function messageReacted($id)
     {
@@ -182,7 +183,7 @@ class MessageController extends Controller
 
         $current_user_name = 'Reinhard Esteban';
 
-        $messageNotRead = Message::where('receiver_name', $current_user_name);
+        $messageNotRead = Message::where('sender_name', $contact)->where('receiver_name', $current_user_name);
 
         $messageNotRead->update([
             'isRead'=>true

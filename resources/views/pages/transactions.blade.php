@@ -18,7 +18,7 @@
     </div>
 </div>
 
-<div class="p-6 bg-white flex-1 overflow-auto w-full h-full">
+<div id="main-content" class="p-6 flex-1 overflow-auto w-full h-full">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4">
         @foreach($transactions as $transaction)
         <div class="bg-white rounded-lg shadow-inner overflow-hidden">

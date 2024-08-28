@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\SettingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,3 +41,5 @@ Route::get('message-is-reacted/{id}', [MessageController::class, 'messageReacted
 Route::post('message-send', [MessageController::class, 'messageSend'])->name('messageSend');
 
 Route::get('contacts', [MessageController::class, 'contacts'])->name('contacts');
+
+route::post('dark-mode', [SettingController::class, 'darkMode'])->name('darkMode');

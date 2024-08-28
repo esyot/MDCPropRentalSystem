@@ -5,11 +5,15 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Transaction;
 use App\Models\Notification;
+use App\Models\Setting;
 use App\Models\Category;
+use App\Models\Message;
 
 class TransactionController extends Controller
 {
     public function index(){
+
+        $current_user_name = "Reinhard Esteban";
 
         $transactions = Transaction::where('category_id', 1)->get();
 
@@ -21,7 +25,22 @@ class TransactionController extends Controller
 
         $page_title = 'Pending Transactions';
 
-        return view('pages.transactions', compact('page_title', 'currentCategory', 'categories', 'transactions', 'unreadNotifications', 'notifications'));
+        $setting = Setting::findOrFail(1);
+
+        $messages = Message::where('receiver_name', $current_user_name)->where('isRead', false)->get();
+
+        $unreadMessages = $messages->count();
+
+        $contacts = Message::where('receiver_name', $current_user_name)
+        ->latest()
+        ->get()
+        ->groupBy('sender_name')
+        ->map(function ($group) {
+            return $group->first(); 
+        })
+        ->values();
+
+        return view('pages.transactions', compact('contacts', 'unreadMessages', 'setting', 'page_title', 'currentCategory', 'categories', 'transactions', 'unreadNotifications', 'notifications'));
 
     }
 

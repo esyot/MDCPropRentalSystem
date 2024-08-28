@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Item;
 use App\Models\Notification;
 use App\Models\Message;
+use App\Models\Setting;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
@@ -46,8 +47,10 @@ class DashboardController extends Controller
         $daysWithRecords = $transactions->map(function ($transaction) {
             return \Carbon\Carbon::parse($transaction->rent_date)->format('Y-m-d'); 
         })->unique()->values()->toArray();
+
+        $setting = Setting::findOrFail(1);
     
-        return view('pages.dashboard', compact('current_user_name', 'receiver_name', 'contacts', 'unreadMessages', 'page_title', 'unreadNotifications', 'notifications', 'items', 'currentCategory', 'categories', 'currentDate', 'transactions', 'daysWithRecords'));
+        return view('pages.dashboard', compact('setting', 'current_user_name', 'receiver_name', 'contacts', 'unreadMessages', 'page_title', 'unreadNotifications', 'notifications', 'items', 'currentCategory', 'categories', 'currentDate', 'transactions', 'daysWithRecords'));
     }
 
     public function dateView($date){
@@ -61,6 +64,8 @@ class DashboardController extends Controller
     public function dateCustom(Request $request){
         
         $page_title = "Dashboard";
+        $current_user_name = "Reinhard Esteban";
+        
         // Get year and month from request
         $year = $request->year;
         $month = $request->month;
@@ -77,14 +82,28 @@ class DashboardController extends Controller
         $notifications = Notification::orderBy('created_at', 'DESC')->get();
         $unreadNotifications = Notification::where('isRead', false)->get()->count();
 
+        $messages = Message::where('receiver_name', $current_user_name)->where('isRead', false)->get();
+        $unreadMessages = $messages->count();
+
 
         $daysWithRecords = $transactions->map(function ($transaction) {
             return \Carbon\Carbon::parse($transaction->rent_date)->format('Y-m-d'); 
         })->unique()->values()->toArray();
 
         $items = Item::where('category_id', $category)->get();
+
+        $contacts = Message::where('receiver_name', $current_user_name)
+        ->latest()
+        ->get()
+        ->groupBy('sender_name')
+        ->map(function ($group) {
+            return $group->first(); 
+        })
+        ->values();
+
+        $setting = Setting::findOrFail(1);
     
-        return view('pages.dashboard', compact('page_title', 'notifications', 'unreadNotifications', 'items','currentCategory', 'categories', 'currentDate', 'transactions', 'daysWithRecords'));
+        return view('pages.dashboard', compact('setting', 'contacts', 'unreadMessages', 'page_title', 'notifications', 'unreadNotifications', 'items','currentCategory', 'categories', 'currentDate', 'transactions', 'daysWithRecords'));
     }
 
     public function transactionAdd(Request $request)
@@ -138,6 +157,16 @@ class DashboardController extends Controller
          // Get year and month from request
 
          $page_title = 'Dashboard';
+         $current_user_name = 'Reinhard Esteban';
+
+         $contacts = Message::where('receiver_name', $current_user_name)
+         ->latest()
+         ->get()
+         ->groupBy('sender_name')
+         ->map(function ($group) {
+             return $group->first(); 
+         })
+         ->values();
         
      
          // Handle the action (e.g., next month, previous month)
@@ -155,6 +184,13 @@ class DashboardController extends Controller
 
             $notifications = Notification::orderBy('created_at', 'DESC')->get();
             $unreadNotifications = Notification::where('isRead', false)->get()->count();
+
+            $messages = Message::where('receiver_name', $current_user_name)->where('isRead', false)->get();
+            $unreadMessages = $messages->count();
+
+
+           
+            
     
             $daysWithRecords = $transactions->map(function ($transaction) {
                 return \Carbon\Carbon::parse($transaction->rent_date)->format('Y-m-d'); 
@@ -162,7 +198,9 @@ class DashboardController extends Controller
     
             $items = Item::where('category_id', $category)->get();
         
-            return view('pages.dashboard', compact('page_title', 'notifications', 'unreadNotifications', 'items','currentCategory', 'categories', 'currentDate', 'transactions', 'daysWithRecords'));
+            $setting = Setting::findOrFail(1);
+
+            return view('pages.dashboard', compact('setting', 'contacts', 'current_user_name', 'unreadMessages', 'page_title', 'notifications', 'unreadNotifications', 'items','currentCategory', 'categories', 'currentDate', 'transactions', 'daysWithRecords'));
            
 
          } elseif ($action === 'right') {
@@ -177,14 +215,21 @@ class DashboardController extends Controller
 
             $notifications = Notification::orderBy('created_at', 'DESC')->get();
             $unreadNotifications = Notification::where('isRead', false)->get()->count();
+
+            
+            $messages = Message::where('receiver_name', $current_user_name)->where('isRead', false)->get();
+            $unreadMessages = $messages->count();
+
     
             $daysWithRecords = $transactions->map(function ($transaction) {
                 return \Carbon\Carbon::parse($transaction->rent_date)->format('Y-m-d'); 
             })->unique()->values()->toArray();
     
             $items = Item::where('category_id', $category)->get();
+
+            $setting = Setting::findOrFail(1);
         
-            return view('pages.dashboard', compact('page_title', 'notifications', 'unreadNotifications', 'items','currentCategory', 'categories', 'currentDate', 'transactions', 'daysWithRecords'));
+            return view('pages.dashboard', compact('setting', 'contacts', 'current_user_name', 'unreadMessages', 'page_title', 'notifications', 'unreadNotifications', 'items','currentCategory', 'categories', 'currentDate', 'transactions', 'daysWithRecords'));
            
          
 
@@ -200,14 +245,20 @@ class DashboardController extends Controller
 
             $notifications = Notification::orderBy('created_at', 'DESC')->get();
             $unreadNotifications = Notification::where('isRead', false)->get()->count();
+
+            $messages = Message::where('receiver_name', $current_user_name)->where('isRead', false)->get();
+            $unreadMessages = $messages->count();
+            
     
             $daysWithRecords = $transactions->map(function ($transaction) {
                 return \Carbon\Carbon::parse($transaction->rent_date)->format('Y-m-d'); 
             })->unique()->values()->toArray();
     
             $items = Item::where('category_id', $category)->get();
+
+            $setting = Setting::findOrFail(1);
         
-            return view('pages.dashboard', compact('page_title', 'notifications', 'unreadNotifications', 'items','currentCategory', 'categories', 'currentDate', 'transactions', 'daysWithRecords'));
+            return view('pages.dashboard', compact('setting', 'contacts', 'current_user_name', 'unreadMessages', 'page_title', 'notifications', 'unreadNotifications', 'items','currentCategory', 'categories', 'currentDate', 'transactions', 'daysWithRecords'));
            
          }
  
