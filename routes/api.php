@@ -43,3 +43,5 @@ Route::post('message-send', [MessageController::class, 'messageSend'])->name('me
 Route::get('contacts', [MessageController::class, 'contacts'])->name('contacts');
 
 route::post('dark-mode', [SettingController::class, 'darkMode'])->name('darkMode');
+
+route::post('transitions', [SettingController::class, 'transitions'])->name('transitions');

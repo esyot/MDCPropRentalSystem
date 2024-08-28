@@ -27,4 +27,24 @@ class SettingController extends Controller
 
         return redirect()->back();
     }
+    public function transitions(Request $request){
+
+        $setting = Setting::findOrFail(1);
+        
+        if($request->action == null){
+
+            $setting->update([
+                'transition'=>false
+            ]);
+
+        }else{
+
+            $setting->update([
+                'transition'=>true
+            ]);
+        }
+        
+
+        return redirect()->back();
+    }
 }

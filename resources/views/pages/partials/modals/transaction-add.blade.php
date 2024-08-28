@@ -1,5 +1,5 @@
 <div id="transaction-add-{{$day}}" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50 hidden">
-    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl relative">
+    <div class="onload:scale-110 bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl relative transform scale-[500px] transition-all duration-[500ms] ease-in-out">
         <form action="{{ route('transaction-create') }}" method="POST">
             @csrf <!-- CSRF token for security -->
 

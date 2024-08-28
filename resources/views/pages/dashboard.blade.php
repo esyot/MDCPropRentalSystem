@@ -121,7 +121,7 @@
                     hx-swap="innerHTML"
                     hx-trigger="click"
                 @endif
-                class="relative transition-transform duration-300 ease-in-out transform hover:scale-105 cursor-auto calendar-cell {{ $hasRecord ? 'bg-blue-500 text-white cursor-pointer shadow-md transition-transform duration-300 ease-in-out transform hover:scale-105' : 'bg-gray-300' }} p-4 flex flex-col items-center justify-center font-semibold overflow-hidden group">
+                class="{{ $setting->transition == true ? 'transition-transform duration-300 ease-in-out transform hover:scale-105' : '' }} relative cursor-auto calendar-cell {{ $hasRecord ? 'bg-blue-500 text-white cursor-pointer shadow-md' : 'bg-gray-300' }} p-4 flex flex-col items-center justify-center font-semibold overflow-hidden group">
                 <div class="flex justify-center items-center">
                     <h1 class="drop-shadow font-bold text-4xl {{ $isSunday ? 'text-red-500' : '' }}">{{ $day }}</h1>
                 </div>
