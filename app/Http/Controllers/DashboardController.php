@@ -7,11 +7,14 @@ use App\Models\Transaction;
 use App\Models\Category;
 use App\Models\Item;
 use App\Models\Notification;
+use App\Models\Message;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
     public function index(){
+        $current_user_name = "Reinhard Esteban";
+        $receiver_name = "Francis Reserva";
         $currentDate = now(); 
         $default = 1; 
 
@@ -25,13 +28,26 @@ class DashboardController extends Controller
         $notifications = Notification::orderBy('created_at', 'DESC')->get();
         $unreadNotifications = Notification::where('isRead', false)->get()->count();
 
+        $messages = Message::where('receiver_name', $current_user_name)->where('isRead', false)->get();
+        $unreadMessages = $messages->count();
+
+        $contacts = Message::where('receiver_name', $current_user_name)
+                    ->latest()
+                    ->get()
+                    ->groupBy('sender_name')
+                    ->map(function ($group) {
+                        return $group->first(); 
+                    })
+                    ->values();
+
+
     
         // Extract days with records
         $daysWithRecords = $transactions->map(function ($transaction) {
             return \Carbon\Carbon::parse($transaction->rent_date)->format('Y-m-d'); 
         })->unique()->values()->toArray();
     
-        return view('pages.dashboard', compact('page_title', 'unreadNotifications', 'notifications', 'items', 'currentCategory', 'categories', 'currentDate', 'transactions', 'daysWithRecords'));
+        return view('pages.dashboard', compact('current_user_name', 'receiver_name', 'contacts', 'unreadMessages', 'page_title', 'unreadNotifications', 'notifications', 'items', 'currentCategory', 'categories', 'currentDate', 'transactions', 'daysWithRecords'));
     }
 
     public function dateView($date){

@@ -25,7 +25,7 @@
                 @endforeach
 
                 @if(count($contacts) == 0)
-                <div class="m-2">
+                <div class="m-2 bg-transparent">
                     <h1 class="text-center">No match found.</h1>
                 </div>
 

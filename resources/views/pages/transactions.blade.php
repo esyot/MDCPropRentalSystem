@@ -27,31 +27,32 @@
                 <div class="flex flex-col items-center">
                     <div class="text-xl font-semibold">{{ $transaction->item->name }}</div>
                     <div class="mt-2">
-    <div class="flex items-center">
-        <span class="font-medium">Rentee:</span>
-        <span class="ml-2 text-yellow-300">{{ $transaction->rentee_name }}</span>
-    </div>
-    <div class="flex items-center">
-        <span class="font-medium">Contact #:</span>
-        <span class="ml-2 text-yellow-300">{{ $transaction->rentee_contact_no }}</span>
-    </div>
-    <div class="flex items-center mt-1">
-        <span class="font-medium">Date Pick-up:</span>
-        <span class="ml-2 text-yellow-300">
-            {{ \Carbon\Carbon::parse($transaction->rent_date . ' ' . $transaction->rent_time)->format('F j, Y h:i A') }}
-        </span>
-    </div>
-    <div class="flex items-center mt-1">
-        <span class="font-medium">Date Return:</span>
-        <span class="ml-2 text-yellow-300">
-            {{ \Carbon\Carbon::parse($transaction->rent_return . ' ' . $transaction->rent_return_time)->format('F j, Y h:i A') }}
-        </span>
-    </div>
-</div>
+                        <div class="flex items-center">
+                            <span class="font-medium">Rentee:</span>
+                            <span class="ml-2 text-yellow-300">{{ $transaction->rentee_name }}</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="font-medium">Contact #:</span>
+                            <span class="ml-2 text-yellow-300">{{ $transaction->rentee_contact_no }}</span>
+                        </div>
+                        <div class="flex items-center mt-1">
+                            <span class="font-medium">Date Pick-up:</span>
+                            <span class="ml-2 text-yellow-300">
+                                {{ \Carbon\Carbon::parse($transaction->rent_date . ' ' . $transaction->rent_time)->format('F j, Y h:i A') }}
+                            </span>
+                        </div>
+                        <div class="flex items-center mt-1">
+                            <span class="font-medium">Date Return:</span>
+                            <span class="ml-2 text-yellow-300">
+                                {{ \Carbon\Carbon::parse($transaction->rent_return . ' ' . $transaction->rent_return_time)->format('F j, Y h:i A') }}
+                            </span>
+                        </div>
+                    </div>
 
                 </div>
                 <div class="mt-4 flex justify-between">
-                    <button class="shadow px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 flex items-center">
+                    <button type="button" onclick="document.getElementById('approveConfirm').classList.remove('hidden')"
+                    class="shadow px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 flex items-center">
                         <i class="fas fa-check mr-2"></i> Approve
                     </button>
                     <button onclick="document.getElementById('delete-confirmation-{{$transaction->id}}').classList.remove('hidden')"
@@ -78,26 +79,26 @@
                     <p class="font-bold text-lg text-center">Decline Transaction</p>
 
                     <div class="flex justify-center mt-4">
-    <div class="text-left flex flex-col">
-        <div class="flex items-center">
-            <span class="font-medium">Rentee:</span>
-            <span class="ml-2 text-red-300">{{ $transaction->rentee_name }}</span>
-        </div>
-        <div class="flex items-center mt-1">
-            <span class="font-medium">Contact #:</span>
-            <span class="ml-2 text-red-300">{{ $transaction->rentee_contact_no }}</span>
-        </div>
-        <div class="flex items-center mt-1">
-            <span class="font-medium">Date Pick-up:</span>
-            <span class="ml-2 text-red-300">
-                {{ \Carbon\Carbon::parse($transaction->rent_date . ' ' . $transaction->rent_time)->format('F j, Y h:i A') }}
-            </span>
-        </div>
-        <div class="flex items-center mt-1">
-            <span class="font-medium">Date Return:</span>
-            <span class="ml-2 text-red-300">
-                {{ \Carbon\Carbon::parse($transaction->rent_return . ' ' . $transaction->rent_return_time)->format('F j, Y h:i A') }}
-            </span>
+        <div class="text-left flex flex-col">
+            <div class="flex items-center">
+                <span class="font-medium">Rentee:</span>
+                <span class="ml-2 text-red-500">{{ $transaction->rentee_name }}</span>
+            </div>
+            <div class="flex items-center mt-1">
+                <span class="font-medium">Contact #:</span>
+                <span class="ml-2 text-red-500">{{ $transaction->rentee_contact_no }}</span>
+            </div>
+            <div class="flex items-center mt-1">
+                <span class="font-medium">Date Pick-up:</span>
+                <span class="ml-2 text-red-500">
+                    {{ \Carbon\Carbon::parse($transaction->rent_date . ' ' . $transaction->rent_time)->format('F j, Y h:i A') }}
+                </span>
+            </div>
+            <div class="flex items-center mt-1">
+                <span class="font-medium">Date Return:</span>
+                <span class="ml-2 text-red-500">
+                    {{ \Carbon\Carbon::parse($transaction->rent_return . ' ' . $transaction->rent_return_time)->format('F j, Y h:i A') }}
+                </span>
         </div>
     </div>
 </div>
@@ -121,58 +122,45 @@
         </div>
     </div>
 </div>
+
 @endforeach
 
-<script>
-    function showModal(modalId) {
-        if (modalId) {
-            document.getElementById(modalId).classList.remove('hidden');
-        }
-    }
 
-    function hideModal(modalId) {
-        if (modalId) {
-            document.getElementById(modalId).classList.add('hidden');
-        }
-    }
 
-    const sidebar = document.getElementById('sidebar');
-    const menuItems = document.getElementById('menu-items');
-    const toggleButton = document.getElementById('toggle-button');
-    const notificationIcon = document.getElementById('notification-icon');
-    const notificationDropdown = document.getElementById('notification-dropdown');
-    const userIcon = document.getElementById('user-icon');
-    const userDropdown = document.getElementById('user-dropdown');
-    const logoLabel = document.getElementById('logoLabel');
+<div id="approveConfirm" class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 hidden">
+    <div class="bg-white shadow-md max-w-md rounded-lg px-4 py-1">
+    
+        <div class="flex space-x-6 justify-center font-semibold items-start">
 
-    toggleButton.addEventListener('click', () => {
-        sidebar.classList.toggle('w-64');
-        sidebar.classList.toggle('w-20');
-        toggleButton.querySelector('i').classList.toggle('fa-arrow-left');
-        toggleButton.querySelector('i').classList.toggle('fa-arrow-right');
-        logoLabel.classList.toggle('hidden');
+        <div class="shadow-md border border-gray-300 p-2 m-2 rounded-full px-3 py-1">
+        <i class="p-3 py-4 font-bold text-red-500 fa-solid fa-question"></i>
+        </div>
+            
 
-        const isExpanded = sidebar.classList.contains('w-64');
-        [...menuItems.children].forEach(item => {
-            item.classList.toggle('justify-center', !isExpanded);
-            item.classList.toggle('pl-4', isExpanded);
-            item.querySelector('span').classList.toggle('hidden', !isExpanded);
-        });
-    });
+    
+        </div>
 
-    notificationIcon.addEventListener('click', () => {
-        notificationDropdown.classList.toggle('hidden');
-    });
 
-    userIcon.addEventListener('click', () => {
-        userDropdown.classList.toggle('hidden');
-    });
+        <div class="flex flex-col justify-center items-center mt-2">
+                    Are you sure to confirm this?
+            <small class="text-[10px] font-semibold text-red-500">Note: this action cannot be undone.</small>
+        </div>
 
-    // Auto-submit form on select change
-    document.querySelectorAll('#filter-form select').forEach(select => {
-        select.addEventListener('change', () => {
-            document.getElementById('filter-form').submit();
-        });
-    });
-</script>
+   
+        
+
+        <div class="flex justify-around space-x-2 my-2">
+            <button class="font-medium px-4 py-2 bg-green-300 hover:bg-green-400 text-green-800 rounded-lg">
+                Yes, sure.
+            </button>
+            <button onclick="document.getElementById('approveConfirm').classList.add('hidden')"
+                class="font-medium px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-lg">
+                No, cancel.
+            </button>
+        </div>
+    </div>
+
+</div>
+
+
 @endsection

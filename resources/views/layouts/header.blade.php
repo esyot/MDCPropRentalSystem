@@ -171,6 +171,45 @@
     
     </div>
 </div>
+ <!-- Messages Icon -->
+ @if($page_title != 'Messages')
+                <div class="relative" id="inside-notification  items-center">
+                    <button id="message-button" class="flex items-center hover:text-gray-300 focus:outline-none">
+                        <i class="fa-solid fa-envelope fa-lg text-blue-600"></i>
+                        <span class="ml-2">Messages</span>
+
+                        @if($unreadMessages > 0)
+                        <span id="notification-count"
+                            class="absolute top-0 right-0 flex items-center justify-center w-4 h-4 text-xs font-bold text-white bg-red-600 rounded-full transform -translate-x-1/2 -translate-y-1/2">
+                            {{ $unreadMessages }}
+                        </span>
+                        @endif
+                    </button>
+
+                    <!-- Messages Dropdown Menu -->
+                    <div id="messages-dropdown"
+                        class="absolute right-0 hidden mt-2 w-64 bg-white border border-gray-300 rounded-lg shadow-lg z-10">
+                        <div class="p-2 max-h-80 overflow-y-auto">
+                            <div class="relative m-2">
+                                <form hx-get="{{ route('contacts') }}"
+                                    hx-trigger="input"
+                                    hx-swap="innerHTML"
+                                    hx-target="#contact-list"
+                                    class="flex justiify-around px-2 items-center bg-gray-100 rounded-full">
+                                    <div class="p-2">
+                                        <i class="fas fa-search text-gray-500"></i>
+                                    </div>
+                                    <input type="text" name="searchValue" placeholder="Search contact"
+                                        class="placeholder-center mr-8 focus:outline-none bg-transparent">
+                                </form>
+                            </div>
+                            <ul id="contact-list" class="list-none">
+                                @include('pages.partials.contact-list')
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                @endif
 
 
 

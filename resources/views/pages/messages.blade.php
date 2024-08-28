@@ -1,342 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MDC - Property Rental System</title>
-    <link rel="stylesheet" href="{{ asset('asset/css/all.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('asset/css/fontawesome.min.css') }}">
-    <script src="{{ asset('asset/js/tailwind.min.js') }}"></script>
-    <script src="{{ asset('asset/js/htmx.min.js') }}"></script>
-    <link rel="icon" href="{{asset('asset/photos/logo.png')}}" type="image/png">
-    <style>
-        .scrollbar-thin::-webkit-scrollbar {
-        width: 4px; 
-        }
-        .scrollbar-thin::-webkit-scrollbar-thumb {
-            background-color: #4b5563;
-            border-radius: 9999px; 
-        }
-        .scrollbar-thin::-webkit-scrollbar-track {
-            background-color: #f3f4f6; 
-        }
-        
-        
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 4px; 
-        }
+@extends('layouts.messenger-header')
+@section('content')
 
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #f1f1f1; 
-        }
-
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #888; 
-            border-radius: 10px; 
-        }
-
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #555; 
-        }
-
-
-        /* Navbar at the top */
-        .navbar {
-            position: fixed;
-            top: 0;
-            left: 5rem; /* Starts after the sidebar */
-            right: 0;
-            z-index: 10;
-            background-color: #fff; /* Tailwind's gray-800 */
-            color: black;
-            padding: 1rem;
-            transition: left 0.3s ease;
-        }
-
-        .navbar.expanded {
-            left: 18rem; /* Adjust according to the expanded sidebar width */
-        }
-
-        /* Sidebar on the left */
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            width: 5rem;
-            overflow-y: auto;
-            z-index: 5;
-            transition: width 0.3s ease;
-        }
-
-        .sidebar.expanded {
-            width: 18rem; /* Expanded width */
-        }
-
-        /* Main content next to the sidebar */
-        .main-content {
-            margin-top: 4rem; /* Aligns with the navbar */
-            margin-left: 5rem; /* Aligns with the sidebar width */
-            height: calc(100vh - 4rem); /* Adjusted for full height minus navbar */
-            display: flex;
-            flex: 1;
-            overflow-y: auto;
-            transition: margin-left 0.3s ease;
-        }
-
-        .main-content.expanded {
-            margin-left: 18rem; /* Margin when sidebar is expanded */
-        }
-
-        /* Box styles */
-        .box-c {
-            overflow-y: auto;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            
-        }
-
-        .box-a {
-            height: 100%;
-            margin: 3rem;
-            width: 100%;
-        }
-         /* Custom CSS to center the placeholder */
-         .placeholder-center::placeholder {
-            text-align: center; /* Center the placeholder text */
-        }
-    </style>
-</head>
-<body>
-
-    <!-- Sidebar -->
-    <div id="sidebar" class="bg-gradient-to-b from-blue-500 to-blue-800 sidebar p-4">
-       <!-- Logo and Label -->
+<!-- Main Content -->
+    <div id="main-content" class="bg-gray-100 main-content mt-16 ml-20 h-[calc(100vh-4rem)] flex flex-1 overflow-y-auto transition-all duration-300 ease-in-out">
        
-        <div class="flex justify-between items-center flex-col">
-
-       <div class="flex flex-col items-center">
-            <img class="w-12 h-12" src="{{asset('asset/photos/logo.png')}}" alt="Logo">
-            <span id="logoLabel" class="text-white ml-4 text-sm text-center hidden">MDC - Property Rental & <br>Reservation System</span>
-        </div>
-
-        <div id="menu-items" class="mt-10 space-y-6 flex flex-col transition-transform duration-600 ease">
-            <a href="{{ route('dashboard') }}" class="w-full p-3 flex items-center text-white hover:text-blue-300 transition duration-200 rounded-lg" title="Dashboard">
-                <i class="fa-solid fa-gauge fa-lg transition-transform duration-300 ease-in-out transform hover:scale-110"></i>
-                <span class="ml-4 text-sm hidden">Dashboard</span>
-            </a>
-            <a href="{{ route('transactions')}}" class="w-full p-3 flex items-center text-white hover:text-blue-300 transition duration-200 rounded-lg" title="Pending requests">
-                <i class="fa-solid fa-list fa-lg transition-transform duration-300 ease-in-out transform hover:scale-110"></i>
-                <span class="ml-4 text-sm hidden">Pending Requests</span>
-            </a>
-           
-            <a href="#" class="w-full p-3 flex items-center text-white hover:text-blue-300 transition duration-200 rounded-lg" title="Manage Roles">
-                <i class="fa-solid fa-users-gear fa-lg transition-transform duration-300 ease-in-out transform hover:scale-110"></i>
-                <span class="ml-4 text-sm hidden">Manage Roles</span>
-            </a>
-            <a href="#" class="w-full p-3 flex items-center text-white hover:text-blue-300 transition duration-200 rounded-lg" title="Manage Users">
-                <i class="fas fa-users fa-lg transition-transform duration-300 ease-in-out transform hover:scale-110"></i>
-                <span class="ml-4 text-sm hidden">Manage Users</span>
-            </a>
-        </div>
-
-        <div class="flex justify-center items-center mt-16">
-            <button id="sidebarToggle" class=" p-2 flex items-center justify-center bg-blue-500 hover:bg-blue-700 rounded-full transition duration-200 transition-transform duration-300 ease-in-out transform hover:scale-110">
-                <i class="fa-solid fa-arrow-right text-white "></i>
-            </button>
-        </div>
-
-
-        
-        </div>
-    </div>
-    </div>
-
-
-    <div id="navbar" class="navbar shadow-md">
-    <div class="container mx-auto flex justify-between items-center">
-        <!-- Page Title -->
-        <div class="text-2xl font-bold text-gray-800">
-            {{$page_title}}
-        </div>
-       <!-- Right-side icons -->
-       <div class="flex items-center space-x-6 relative">
-                <!-- Notification Icon -->
-<div class="relative" id="inside-notification">
-    <!-- Notification Button -->
-    <button id="notification-icon" class="hover:text-gray-300">
-        <i class="fa-solid fa-bell fa-lg text-blue-600"></i>
-        <span>Notifications</span>
-       @if($unreadNotifications > 0)
-        <span id="notification-count" class="absolute bottom-1 left-4 flex items-center justify-center w-4 h-4 text-xs font-bold text-white bg-red-600 rounded-full -translate-x-1/2 -translate-y-1/2">
-           {{ $unreadNotifications  }}
-        </span>
-        @endif
-    </button>
-
-    <!-- Notification Dropdown -->
-    <div id="notification-dropdown" class="rounded absolute right-0 mt-2 hidden w-[30rem] bg-white p-2 shadow-lg border border-gray-200 z-50">
-    <div>
-            <h1 class="text-2xl font-bold">Notifications</h1>
-    </div> 
-    
-    <div class="flex justify-between items-center">
-    <div class="font-medium p-2">
-            <button id="all" onclick="document.getElementById('all').classList.add('bg-blue-300'); document.getElementById('unread').classList.remove('bg-blue-300')"
-                hx-get="{{ route('notificationList', ['filter'=>'all'])}}" 
-                hx-swap="innerHTML" 
-                hx-trigger="click" 
-                 hx-indicator="#loader"
-                hx-target="#notification-list"
-                class="px-2 rounded-full text-blue-500 bg-blue-300 hover:bg-blue-200">
-                All
-            </button>
-
-
-            <button id="unread" onclick="document.getElementById('unread').classList.add('bg-blue-300'); document.getElementById('all').classList.remove('bg-blue-300');"
-                hx-get="{{ route('notificationList', ['filter'=>'unread'])}}" 
-                hx-swap="innerHTML" 
-                hx-trigger="click" 
-                hx-indicator="#loader"
-                hx-target="#notification-list"
-                class="px-2 text-blue-500 rounded-full hover:bg-blue-200">
-                Unread
-            </button>
-        </div>
-
-        <div class="relative inline-block text-left">
-        <button id="dropdownButton" class="focus:outline-none">
-            <i class="text-blue-500 hover:bg-blue-200 p-2 fas fa-ellipsis rounded-full"></i>
-        </button>
-        <div id="dropdownMenu" class="dropdown-content absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded shadow-lg">
-            <a href="{{ route('readAll') }}" class="block px-4 py-2 text-gray-700 rounded hover:bg-gray-100">
-                <i class="fas fa-check-circle mr-2"></i> Mark as all read
-            </a>
-            <a href="{{ route('deleteAll') }}" class="block px-4 py-2 text-gray-700 rounded hover:bg-gray-100">
-                <i class="fas fa-trash mr-2"></i> Delete All
-            </a>
-        </div>
-
-    </div>
-        </div>
-       
-        <div id="loader" class="rounded  bg-gray-400 bg-opacity-50 absolute inset-0 flex items-center justify-center z-50 hidden">
-       
-            <img src="{{asset('asset/loader/loading.gif')}}" alt="Loading..." class="w-16 h-16">
-        </div>
-
-        <div id="notification-list" class="z-10 flex flex-col max-h-64 overflow-y-auto scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-100">
-        
-        @include('pages.partials.notification-list')
-
-       
-            <!-- "See More" Button -->
-            @if(count($notifications) > 5)
-            <button id="see-more-btn" class="w-full p-2 text-blue-600 cursor-pointer hover:bg-blue-100 transition duration-150 ease-in-out">
-                See More
-            </button>
-            @endif
-    
-    </div>
-</div>
-
-@if($page_title != 'Messages')
-<div class="relative" id="inside-notification">
-    <!-- Message Button -->
-    <button id="message-button" class="flex items-center hover:text-gray-300 focus:outline-none">
-        <i class="fa-solid fa-envelope fa-lg text-blue-600"></i>
-        <span class="ml-2">Messages</span>
-       
-        @if($unreadMessages > 0)
-        <span id="notification-count" class="absolute top-0 right-0 flex items-center justify-center w-4 h-4 text-xs font-bold text-white bg-red-600 rounded-full transform -translate-x-1/2 -translate-y-1/2">
-           {{ $unreadMessages }}
-        </span>
-        @endif
-    </button>
-
-    <!-- Dropdown Menu -->
-    <div id="messages-dropdown" class="absolute right-0 hidden mt-2 w-64 bg-white border border-gray-300 rounded-lg shadow-lg z-10">
-        <div class="p-2 max-h-80 overflow-y-auto">
-        <div class="relative m-2">
-                <form hx-get="{{ route('contacts') }}"
-                hx-trigger="input"
-                hx-swap="innerHTML"
-                hx-target="#contact-list" class="flex justiify-around px-2 items-center bg-gray-100 rounded-full">
-
-                <div class="p-2">
-                    <i class="fas fa-search text-gray-500"></i>
-                    </div>
-                    <input type="text" name="searchValue" placeholder="Search contact" class="placeholder-center mr-8 focus:outline-none bg-transparent">
-                    
-                   
-                   
-                </form>  
-                    
-            </div>
-            <ul id="contact-list" class="list-none">
-            
-               @include('pages.partials.contact-list')
-
-        </ul>   
-        </div>
-    </div>
-</div>
-<script>
-     const messageButton = document.getElementById('message-button');
-    const dropdownMenu = document.getElementById('messages-dropdown');
-
-    messageButton.addEventListener('click', function(event) {
-        event.preventDefault();
-        dropdownMenu.classList.toggle('hidden');
-    });
-
-    // Close the dropdown if the user clicks outside of it
-    document.addEventListener('click', function(event) {
-        if (!messageButton.contains(event.target) && !dropdownMenu.contains(event.target)) {
-            dropdownMenu.classList.add('hidden');
-        }
-    });
-</script>
-
-@endif
-
-
-
-                <!-- User Icon -->
-                <div id="inside-user" class="relative">
-                    <button id="user-icon">
-                    <i  class="fa-solid fa-user fa-lg text-blue-600 cursor-pointer"></i>
-                    {{ $current_user_name }}
-                    </button>
-                    
-
-                    <!-- User Dropdown -->
-                    <div id="user-dropdown" class="absolute right-0 mt-2 hidden min-w-[12rem] p-2 bg-white rounded-lg shadow-lg z-50">
-                        <div class="p-2 text-gray-800 cursor-pointer hover:bg-gray-200">
-                            <i class="fas fa-user mr-2"></i> Profile
-                        </div>
-                        <div class="p-2 text-gray-800 cursor-pointer hover:bg-gray-200">
-                            <i class="fas fa-cog mr-2"></i> Settings
-                        </div>
-                        <div class="p-2 text-gray-800 cursor-pointer hover:bg-gray-200">
-                            <i class="fas fa-sign-out-alt mr-2"></i> Logout
-                        </div>
-                    </div>
-
-                </div>
-                
-            </div>
-            
-        </div>
-    </div>
-</div>
-
-
-    <!-- Main Content -->
-    <div id="main-content" class="main-content flex bg-gray-100">
-        <!-- Box A -->
-        <div class="w-80 m-2 flex items-center flex-col ">
+        <div id="chats" class="flex w-80 m-2 items-center flex-col">
 
         <div class="text-2xl font-bold m-2">
             Chats
@@ -351,20 +19,22 @@
                 <div class="p-2">
                     <i class="fas fa-search text-gray-500"></i>
                     </div>
-                    <input type="text" name="searchValue" placeholder="Search contact" class="placeholder-center mr-8 focus:outline-none bg-transparent">
-                    
-                   
+                    <input type="text" title="Search" name="searchValue" placeholder="Search contact" class="bg-transparent placeholder-center mr-8 focus:outline-none">       
                    
                 </form>  
                     
             </div>
 
         </div>
-        <ul id="contact-list" class="list-none">
-            
-               @include('pages.partials.contact-list')
+        <div id="contacts" class="mb-2 flex p-2 overflow-y-auto custom-scrollbar">
+            <ul id="contact-list" class="list-none">
+                
+                @include('pages.partials.contact-list')
 
-        </ul>         
+            </ul>   
+
+        </div>
+             
          
         </div>
         <!-- Box C -->
@@ -379,8 +49,8 @@
 
             </div>
 
-            <div class="relative flex w-full h-full"> <!-- Adjust the parent container to have width and height -->
-            <div class="absolute inset-0 top-[17rem] flex items-center justify-center"> <!-- Center the child in the parent -->
+            <div class="relative flex w-full h-full">
+            <div class="absolute inset-0 top-[17rem] flex items-center justify-center"> 
                  <img class="bg-blue-500 rounded-full p-2 flex w-[300px] opacity-10 drop-shadow-2xl" src="{{asset('asset/photos/logo.png')}}" alt="">
             </div>
             </div>
@@ -390,25 +60,19 @@
         
        
 
-        <div id="messages-container" class="box-c bg-blue-300 scrollbar-thin h-64">
-    @if(count($allMessages) == 0)
-        <div class="flex flex-wrap w-full h-full items-center justify-center">
-            
-        <p class="p-4 text-center">No chat selected. Please choose a contact.</p>
+        <div id="messages-container" class="flex flex-1 overflow-y-auto flex-col bg-blue-300 custom-scrollbar h-64">
+            @if(count($allMessages) == 0)
+                <div class="flex flex-wrap w-full h-full items-center justify-center">
+                    
+                <p class="p-4 text-center">No chat selected. Please choose a contact.</p>
 
-        </div>
-    @endif
-
-    <style>
-        
-    </style>
-    
-
+                </div>
+            @endif
 
    
         
             <!-- Messages Bubble Section -->
-            <div class="flex flex-col bg-blue-200">
+            <div class="flex flex-col bg-blue-300">
             
                 @foreach($allMessages as $message)
                 @if(count($allMessages) < 0)
@@ -473,7 +137,7 @@
                                
 
     
-                            </div>
+                                </div>
 
                             </div>
                            
@@ -533,18 +197,18 @@
                              onmouseout="document.getElementById('icons-{{$message->id}}').classList.add('hidden')"
                              class="w-[400px] flex {{ $message->sender_name == $current_user_name ? 'justify-end' : '' }} items-center space-x-1">
                            
-                           <!-- icons right -->
+                           <!-- icons right side -->
 
                              @if($message->sender_name == $current_user_name)
                                 <div id="icons-{{$message->id}}" class="items-center hidden">
                                     <form class="flex" action="{{ route('messageReacted', ['id'=>$message->id]) }}">
                                         <button type="submit" title="React"
-                                        class="px-1 py-1.2 rounded-full hover:bg-blue-500 ">
+                                        class="px-1 py-1.2 rounded-full hover:bg-blue-300 ">
                                             <i class="hover:text-blue-100 fa-regular fa-face-smile"></i>
                                         </button>
 
-                                        <button title="Reply"  class="px-1 py-1.2 rounded-full hover:bg-blue-500"
-                                        onclick="handleButtonClick('{{ $message->id }}', '{{ $message->sender_name }}', '{{ $message->type }}', '{{ $sender_name }}', '{{ $receiver_name }}')" type="button">
+                                        <button title="Reply"  class="px-1 py-1.2 rounded-full hover:bg-blue-300"
+                                        onclick="handleButtonClick('{{ $message->id }}', '{{ $message->sender_name }}', '{{ $message->type }}')" type="button">
                                             <i class="hover:text-blue-100 fa-solid fa-share" style="transform: scaleX(-1);"></i>    
                                         </button>
                                     </form>
@@ -567,7 +231,7 @@
                                 <div class="{{ $message->sender_name == $current_user_name ? 'float-end' : 'float-start' }} text-justify bg-opacity-30 text-blue-500 inline-block max-w-full rounded-2xl relative">
                                     
 
-                                <i class="text-[120px] fa-solid fa-thumbs-up"></i>
+                                    <i class="text-[120px] fa-solid fa-thumbs-up"></i>
                                 </div>
 
                                 @elseif($message->type == 'image')
@@ -603,12 +267,12 @@
                              <div id="icons-{{$message->id}}" class="items-center hidden">
                                     <form class="flex" action="{{ route('messageReacted', ['id'=>$message->id]) }}">
                                         <button type="submit" title="React"
-                                        class="px-1 py-1.2 rounded-full hover:bg-blue-500 ">
+                                        class="px-1 py-1.2 rounded-full hover:bg-blue-300 ">
                                             <i class="hover:text-blue-100 fa-regular fa-face-smile"></i>
                                         </button>
 
-                                        <button title="Reply"  class="px-1 py-1.2 rounded-full hover:bg-blue-500"
-                                        onclick="handleButtonClick('{{ $message->id }}', '{{ $message->sender_name }}', '{{ $message->type }}', '{{ $sender_name }}', '{{ $receiver_name }}')" type="button">
+                                        <button title="Reply"  class="px-1 py-1.2 rounded-full hover:bg-blue-300"
+                                        onclick="handleButtonClick('{{ $message->id }}', '{{ $message->sender_name }}', '{{ $message->type }}')" type="button">
                                             <i class="hover:text-blue-100 fa-solid fa-share" style="transform: scaleX(-1);"></i>    
                                         </button>
                                     </form>
@@ -666,7 +330,8 @@
 
                     
                      <input type="file" id="fileInput" class="hidden" accept="image/*" onchange="previewImage(event)">
-                    <button type="button" class="transition-transform duration-300 ease-in-out transform hover:scale-110 drop-shadow text-xl px-2 py-2 hover:text-white text-gray-100" onclick="document.getElementById('fileInput').click();">
+                    <button type="button" title="Image"
+                    class="rounded-full hover:bg-blue-300 transition-transform duration-300 ease-in-out transform hover:scale-110 drop-shadow text-xl px-2 py-1 hover:text-white text-gray-100" onclick="document.getElementById('fileInput').click();">
                         <i class="fa-solid fa-image"></i>
                     </button>
 
@@ -683,7 +348,7 @@
                 <div class="relative w-full">
             <div class="flex items-end space-x-2 rounded-lg">
             
-                <div class="flex flex-col flex-1 bg-white rounded-lg">
+                <div class="flex flex-col flex-1 bg-white rounded-xl">
                 <div class="flex flex-wrap items-start">
                     <div  class="flex flex-wrap">
                    
@@ -692,44 +357,46 @@
                         
                         </div>
                     </div>
-                    <div id="img-preview-x" class="absolute left-[9.5rem] top-1 text-black font-semibold hover:text-gray-300 hidden">
-                     <div class="flex items-center justify-center hover:bg-gray-500 drop-shadow w-6 bg-gray-400 rounded-full">
-                        <button onclick="imagePreviewClose()" title="Close"
-                            type="button" class="drop-shadow text-white">&times;
-                        </button>
+                    <div id="img-preview-x" class="absolute left-[9.5rem] top-1 text-red-800 font-semibold hidden">
+                  
+                    <button type="button" onclick="imagePreviewClose()" title="Close" class="shadow-md border border-gray-300 w-8 h-8 flex items-center justify-center rounded-full bg-white hover:bg-gray-200 text-gray-600 hover:text-gray-800 focus:outline-none">
+                            <span class="mb-1 text-2xl font-semibold">&times;</span>
+                    </button>
 
-                    </div>
+
+              
                      </div>
                     
                     </div>
 
-                    <div class="flex flex-col p-2 bg-white rounded-lg">
+                    <div class="flex flex-col p-2 bg-white rounded-full">
 
                     <input autocomplete="off" type="text" id="content" name="content" 
-                        class="w-full px-2 bg-white rounded-full focus:outline-none" placeholder="Aa">
+                        class="w-full px-2 focus:outline-none" placeholder="Aa">
    
                     </div>
                     
                 </div>
                 <div class="px-2">
 
-                <button type="submit" id="sendButton" class="transition-transform duration-300 ease-in-out transform hover:scale-110 drop-shadow flex items-center text-xl text-2xl px-2 py-2 hover:text-white text-blue-100 mb-0.5">
+                <button type="submit" id="sendButton" title="Send"
+                class="rounded-full hover:bg-blue-300 transition-transform duration-300 ease-in-out transform hover:scale-110 drop-shadow flex items-center text-xl text-2xl px-2 py-2 hover:text-white text-blue-100 mb-0.5">
                     <i id="sendIcon" class="fa-solid fa-thumbs-up"></i>
                 </button>
 
+                        </div>
+                        
+                    </div>
                 </div>
-                
-            </div>
-        </div>
             </div>
                 
                 
             </form>
         
-        </div>
             </div>
         </div>
     </div>
+</div>
   
     <script>
           
@@ -884,14 +551,14 @@
         });
     
     
-        
+    // Scroll messages container to the bottom when the page loads
 
-function scrollToBottom() {
+    function scrollToBottom() {
         const messagesContainer = document.getElementById('messages-container');
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
 
-    // Scroll to the bottom when the page loads
+   
     window.onload = function() {
         scrollToBottom();
         document.getElementById('content').focus();
@@ -901,11 +568,11 @@ function scrollToBottom() {
 
 
         // Global variable to track the currently open element
-let currentlyVisibleElementId = null;
+    let currentlyVisibleElementId = null;
 
-function handleButtonClick(currentMessageId, replied_message_name, replied_message_type, sender_name, receiver_name) {
+    function handleButtonClick(currentMessageId, replied_message_name, replied_message_type) {
+        
     
-   
 
     const newElementId = `message-to-reply-${currentMessageId}`;
     
@@ -931,127 +598,10 @@ function handleButtonClick(currentMessageId, replied_message_name, replied_messa
     document.getElementById('replied-message-id').value = currentMessageId;
     document.getElementById('replied-message-name').value = replied_message_name;
     document.getElementById('replied-message-type').value = replied_message_type;
-    document.getElementById('sender-name').value = sender_name;
-    document.getElementById('receiver-name').value = receiver_name;
     document.getElementById('content').focus();
 }
 
-    const sidebar = document.getElementById('sidebar');
-    const mainContent = document.getElementById('main-content');
-    const navbar = document.getElementById('navbar');
-    const toggleButton = document.getElementById('sidebarToggle');
-    const menuItems = document.getElementById('menu-items');
-    const logoLabel = document.getElementById('logoLabel');
-
-    toggleButton.addEventListener('click', () => {
-        const isExpanded = sidebar.classList.contains('expanded');
-
-        // Toggle sidebar and related elements
-        sidebar.classList.toggle('expanded', !isExpanded);
-        mainContent.classList.toggle('expanded', !isExpanded);
-        navbar.classList.toggle('expanded', !isExpanded);
-
-        // Toggle icon classes
-        const icon = toggleButton.querySelector('i');
-        
-        if (icon) {
-            icon.classList.remove(isExpanded ? 'fa-arrow-left' : 'fa-arrow-right');
-            icon.classList.add(isExpanded ? 'fa-arrow-right' : 'fa-arrow-left');
-        }
-
-        // Toggle menu item spans and logo label visibility
-        [...menuItems.children].forEach(item => {
-            const span = item.querySelector('span');
-            if (span) {
-                span.classList.toggle('hidden', isExpanded);
-            }
-        });
-        if (logoLabel) {
-            logoLabel.classList.toggle('hidden', isExpanded);
-        }
-    });
-   
-     document.body.addEventListener('htmx:beforeRequest', function() {
-            document.getElementById('loader').classList.remove('hidden');
-        });
-
-        document.body.addEventListener('htmx:afterRequest', function() {
-            document.getElementById('loader').classList.add('hidden');
-        });
-
-    const notificationIcon = document.getElementById('notification-icon');
-    const notificationDropdown = document.getElementById('notification-dropdown');
-    const userIcon = document.getElementById('user-icon');
-    const userDropdown = document.getElementById('user-dropdown');
-
-    notificationIcon.addEventListener('click', () => {
-        notificationDropdown.classList.toggle('hidden');
-    });
-
-    userIcon.addEventListener('click', () => {
-        userDropdown.classList.toggle('hidden');
-    });
-    document.addEventListener('DOMContentLoaded', function() {
-        
-        const seeMoreBtn = document.getElementById('see-more-btn');
-        const notificationList = document.getElementById('notification-list');
-        const notificationDropdown = document.getElementById('notification-dropdown');
-        const userDropdown = document.getElementById('user-dropdown');
-        const insideUser = document.getElementById('inside-user');
-        const insideNotification = document.getElementById('inside-notification');
-
-        if (seeMoreBtn) {
-            seeMoreBtn.addEventListener('click', function() {
-                if (notificationList.classList.contains('max-h-64')) {
-                    notificationList.classList.remove('max-h-64');
-                    notificationList.classList.add('max-h-[calc(100vh-8rem)]'); 
-                    seeMoreBtn.textContent = 'See Less';
-
-                    const rect = dropdown.getBoundingClientRect();
-                    const viewportHeight = window.innerHeight;
-
-                    if (rect.bottom > viewportHeight) {
-                        dropdown.style.top = `-${rect.bottom - viewportHeight}px`;
-                    }
-                } else {
-                    notificationList.classList.remove('max-h-[calc(100vh-8rem)]');
-                    notificationList.classList.add('max-h-64');
-                    seeMoreBtn.textContent = 'See More';
-                }
-            });
-        }
-        
-        document.addEventListener('click', function(event) {
-            const clickedElement = event.target;
-            
-            // Hide user dropdown if click is outside of it
-            if (!userDropdown.contains(clickedElement) && !insideUser.contains(clickedElement)) {
-                userDropdown.classList.add('hidden');
-            }
-
-            // Hide notification dropdown if click is outside of it
-            if (!notificationDropdown.contains(clickedElement) && !insideNotification.contains(clickedElement)) {
-                notificationDropdown.classList.add('hidden');
-            }
-        });
-
-            const button = document.getElementById('dropdownButton');
-            const menu = document.getElementById('dropdownMenu');
-
-            button.addEventListener('click', function () {
-                menu.classList.toggle('hidden');
-            });
-
-             
-            document.addEventListener('click', function (event) {
-                if (!button.contains(event.target) && !menu.contains(event.target)) {
-                    menu.classList.add('hidden');
-                }
-            });
-
-    });
 
 </script>
 
-</body>
-</html>
+@endsection

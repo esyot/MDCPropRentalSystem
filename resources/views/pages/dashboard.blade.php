@@ -21,24 +21,33 @@
                     <i class="shadow-md text-white fa-solid fa-chevron-right hover:text-blue-300 cursor-pointer bg-blue-500 w-10 h-10 flex items-center justify-center rounded-full transition-transform duration-300 ease-in-out transform hover:scale-110"></i>
                 </a>
             @endforeach
-            <select name="month" class="shadow-inner block px-4 py-2 border border-gray-500 rounded">
-                <option value="{{ $currentDate->format('n') }}">{{ $currentDate->format('F') }}</option>
-                <option value="1">January</option>
-                <option value="2">February</option>
-                <option value="3">March</option>
-                <option value="4">April</option>
-                <option value="5">May</option>
-                <option value="6">June</option>
-                <option value="7">July</option>
-                <option value="8">August</option>
-                <option value="9">September</option>
-                <option value="10">October</option>
-                <option value="11">November</option>
-                <option value="12">December</option>
-            </select>
 
-            <select name="year" class="block shadow-inner px-4 py-2 border border-gray-500 rounded">
-                <option value="{{ $currentDate->format('Y') }}">{{ $currentDate->format('Y') }}</option>
+        
+            <div title="Month" class="shadow-inner flex space-x-2 items-center block bg-white p-2 rounded-xl border border-gray-500">
+                <i class="fas fa-calendar text-gray-500"></i>
+                <select name="month" class="bg-transparent focus:outline-none">
+                    <option class="text-red-500 font-semibold" value="{{ $currentDate->format('n') }}">{{ $currentDate->format('F') }}</option>
+                    <option value="1">January</option>
+                    <option value="2">February</option>
+                    <option value="3">March</option>
+                    <option value="4">April</option>
+                    <option value="5">May</option>
+                    <option value="6">June</option>
+                    <option value="7">July</option>
+                    <option value="8">August</option>
+                    <option value="9">September</option>
+                    <option value="10">October</option>
+                    <option value="11">November</option>
+                    <option value="12">December</option>
+                </select>
+            </div>
+
+            <div>
+           
+            <div title="Year" class="shadow-inner flex space-x-2 items-center p-2 bg-white rounded-xl border border-gray-500">
+            <i class="fa-solid fa-calendar-days text-gray-500"></i>
+            <select name="year" class="bg-transparent focus:outline-none">
+                <option class="text-red-500 font-semibold" value="{{ $currentDate->format('Y') }}">{{ $currentDate->format('Y') }}</option>
                 <option value="2024">2024</option>
                 <option value="2025">2025</option>
                 <option value="2026">2026</option>
@@ -47,15 +56,22 @@
                 <option value="2029">2029</option>
                 <option value="2030">2030</option>
             </select>
+            </div>
+            </div>
 
-            <select name="category" class="shadow-inner block px-4 py-2 border border-gray-500 rounded">
-                @foreach($currentCategory as $category)
-                    <option value="{{ $category->id }}">{{ $category->title }}</option>
-                @endforeach
-                @foreach($categories as $category)
-                    <option value="{{ $category->id }}">{{ $category->title }}</option>
-                @endforeach
-            </select>
+          <div title="Category" class="shadow-inner flex items-center p-2 bg-white space-x-2 rounded-xl border border-gray-500">
+            <i class="fa-solid fa-list text-gray-500"></i>
+            
+            <select name="category" class="bg-transparent focus:outline-none">
+                    @foreach($currentCategory as $category)
+                        <option class="text-red-500 font-semibold" value="{{ $category->id }}">{{ $category->title }}</option>
+                    @endforeach
+                    @foreach($categories as $category)
+                        <option value="{{ $category->id }}">{{ $category->title }}</option>
+                    @endforeach
+                </select>
+          </div>
+
 
             </form>
     </div>
