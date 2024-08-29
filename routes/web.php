@@ -6,6 +6,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,7 +27,7 @@ Route::get('/', [DashboardController::class, 'index']);
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-Route::get('/login',[LoginController::class, 'index']);
+Route::get('/login', [LoginController::class, 'index']);
 
 Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions');
 
@@ -38,6 +39,5 @@ Route::get('messages', [MessageController::class, 'index'])->name('messages');
 
 Route::get('chat-selected/{contact}', [MessageController::class, 'chatSelected'])->name('chatSelected');
 
-
-
+Route::get('categories', [CategoryController::class, 'index'])->name('categories');
 
